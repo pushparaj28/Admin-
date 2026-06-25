@@ -1,0 +1,153 @@
+{% extends 'gyn/base.html' %}
+{% load static %}
+
+{% block page_title %}Appointments{% endblock %}
+
+{% block content %}
+<div id="appointments-page">
+    
+    <div class="card-grid">
+        <div class="card">
+            <div class="card-icon blue"><i class="fa-regular fa-calendar"></i></div>
+            <p class="card-title">Total Bookings</p>
+            <h3 class="card-value">{{ total_bookings }}</h3> 
+            <p class="card-status success">All time records</p>
+        </div>
+        
+        <div class="card">
+            <div class="card-icon indigo"><i class="fa-solid fa-user-doctor"></i></div>
+            <p class="card-title">Today's Bookings</p>
+            <h3 class="card-value">{{ todays_bookings }}</h3> 
+            <p class="card-status success">Scheduled for today</p>
+        </div>
+        
+        <div class="card">
+            <div class="card-icon green"><i class="fa-regular fa-circle-check"></i></div>
+            <p class="card-title">Confirmed</p>
+            <h3 class="card-value">{{ confirmed_bookings }}</h3> 
+            <p class="card-status success">Active Status</p>
+        </div>
+        
+        <div class="card">
+            <div class="card-icon orange"><i class="fa-regular fa-clock"></i></div>
+            <p class="card-title">Pending Action</p>
+            <h3 class="card-value">{{ pending_bookings }}</h3> 
+            <p class="card-status warning">Awaiting Reply</p>
+        </div>
+    </div>
+
+    <div class="table-container">
+        
+        <div class="table-controls">
+            <form method="GET" action="" class="left-controls" style="display: flex; gap: 10px; margin: 0;">
+                <input type="text" name="q" class="input-box" placeholder="Search booking ID or Name..." value="{{ request.GET.q|default:'' }}">
+                <button type="submit" class="btn btn-secondary">Search</button>
+                
+                {% if request.GET.q %}
+                    <a href="{% url 'appointments' %}" class="btn btn-secondary" style="text-decoration: none; display: flex; align-items: center; color: #ef4444;">Clear</a>
+                {% endif %}
+            </form>
+            <div class="right-controls">
+                <a href="{% url 'add_appointment' %}" class="btn btn-primary">
+                    <i class="fa-solid fa-plus"></i> Add Appointment
+                </a>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Patient Name</th>
+                        <th>Email</th>
+                        <th>Date & Time</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appt in appointments %}
+                    <tr>
+                        <td>{{ appt.booking_id }}</td>
+                        <td>{{ appt.patient_name }}</td>
+                        <td>{{ appt.email }}</td>
+                        <td>{{ appt.appointment_date }} <br> <span style="color: gray; font-size: 12px;">{{ appt.appointment_time }}</span></td>
+                        <td>
+                            {% if appt.status == 'Confirmed' %}
+                                <span class="success">{{ appt.status }}</span>
+                            {% elif appt.status == 'Pending' %}
+                                <span class="warning">{{ appt.status }}</span>
+                            {% else %}
+                                <span>{{ appt.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'edit_appointment' appt.id %}" class="btn btn-secondary" style="text-decoration: none; padding: 4px 8px; font-size: 13px;">Edit</a>
+                            <a href="{% url 'delete_appointment' appt.id %}" class="btn btn-secondary text-danger delete-btn" style="text-decoration: none; padding: 4px 8px; font-size: 13px;">
+                                Delete
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="empty-message">No appointments found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+<!-- Pagination ke liye banai template  -->
+        <div class="pagination-container">
+            <div class="pagination">
+                
+                {% if appointments.has_previous %}
+                    <a href="?page=1" class="page-btn">&laquo; First</a>
+                    <a href="?page={{ appointments.previous_page_number }}" class="page-btn">Previous</a>
+                {% else %}
+                    <span class="page-btn disabled">&laquo; First</span>
+                    <span class="page-btn disabled">Previous</span>
+                {% endif %}
+        
+                <span class="current-page">
+                    Page <strong>{{ appointments.number }}</strong> of <strong>{{ appointments.paginator.num_pages }}</strong>
+                </span>
+        
+                {% if appointments.has_next %}
+                    <a href="?page={{ appointments.next_page_number }}" class="page-btn">Next</a>
+                    <a href="?page={{ appointments.paginator.num_pages }}" class="page-btn">Last &raquo;</a>
+                {% else %}
+                    <span class="page-btn disabled">Next</span>
+                    <span class="page-btn disabled">Last &raquo;</span>
+                {% endif %}
+                
+            </div>
+        </div>
+
+
+    </div>
+</div>
+</div> 
+
+<!-- Tost message ki template  -->
+
+{% if messages %}
+<div class="toast-container">
+    {% for message in messages %}
+        <div class="toast {{ message.tags }}">
+            {% if message.tags == 'success' %}
+                <i class="fa-solid fa-circle-check"></i>
+            {% elif message.tags == 'warning' %}
+                <i class="fa-solid fa-trash-can"></i>
+            {% else %}
+                <i class="fa-solid fa-circle-info"></i>
+            {% endif %}
+            <span>{{ message }}</span>
+        </div>
+    {% endfor %}
+</div>
+{% endif %} ```
+<script src="{% static 'js/script.js' %}"></script>
+
+{% endblock %}

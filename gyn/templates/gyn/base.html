@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pushpendra Pro - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <!-- tost message ke liye. code. -->
+  <div class="pagination-container">
+    <div class="pagination">
+        
+        {% if appointments.has_previous %}
+            <a href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="page-btn">&laquo; First</a>
+            <a href="?page={{ appointments.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="page-btn">Previous</a>
+        {% else %}
+            <span class="page-btn disabled">&laquo; First</span>
+            <span class="page-btn disabled">Previous</span>
+        {% endif %}
+
+        <span class="current-page">
+            Page <strong>{{ appointments.number }}</strong> of <strong>{{ appointments.paginator.num_pages }}</strong>
+        </span>
+
+        {% if appointments.has_next %}
+            <a href="?page={{ appointments.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="page-btn">Next</a>
+            <a href="?page={{ appointments.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="page-btn">Last &raquo;</a>
+        {% else %}
+            <span class="page-btn disabled">Next</span>
+            <span class="page-btn disabled">Last &raquo;</span>
+        {% endif %}
+        
+    </div>
+</div>
+
+<div class="app-layout">
+        
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fa-solid fa-notes-medical"></i>
+                <span>Pushpendra Pro</span>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <a href="/dashboard/" class="nav-item">
+                    <i class="fa-solid fa-border-all"></i> Dashboard
+                </a>
+                <a href="/appointments/" class="nav-item {% if request.path == '/appointments/' %}active{% endif %}">
+                    <i class="fa-regular fa-calendar-check"></i> Appointments
+                </a>
+                <a href="/patients/" class="nav-item">
+                    <i class="fa-solid fa-users"></i> Patients
+                </a>
+                <a href="/earnings/" class="nav-item">
+                    <i class="fa-solid fa-wallet"></i> Earnings And Payouts
+                </a>
+                <a href="/withdrawal/" class="nav-item">
+                    <i class="fa-solid fa-gear"></i> Withdrawal
+                </a>
+                <a href="/commission/" class="nav-item">
+                    <i class="fa-solid fa-gear"></i> Commission
+                </a>
+                <a href="/reviews/" class="nav-item">
+                    <i class="fa-solid fa-gear"></i> Reviews
+                </a>
+                <a href="/availability/" class="nav-item">
+                    <i class="fa-solid fa-gear"></i> Manage Availability 
+                </a>
+                <a href="/settings/" class="nav-item">
+                    <i class="fa-solid fa-gear"></i> Settings
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="/logout/" class="nav-item logout">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            
+            <header class="top-nav">
+                <h2 id="page-title">{% block page_title %}Dashboard{% endblock %}</h2>
+                
+                <div class="nav-right">
+                    <div class="search-bar">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" placeholder="Quick search...">
+                    </div>
+                    <i class="fa-regular fa-bell icon-btn"></i>
+                    <div class="profile-box">
+                        <span class="avatar"></span>
+                        <span class="name">Dr. Pushpendra</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="page-container">
+                {% block content %}
+                {% endblock %}
+            </div>
+
+        </main>
+    </div>
+
+</body>
+</html>

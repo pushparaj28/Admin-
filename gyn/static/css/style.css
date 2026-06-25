@@ -252,3 +252,103 @@ body { background-color: var(--bg-color); color: var(--text-dark); }
     font-size:50px;
     color:#d1d5db;
 }
+
+
+
+
+/* TOAST NOTIFICATION CSS */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999; /* Sabse upar dikhane ke liye */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    min-width: 250px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 500;
+    font-size: 14px;
+    transform: translateX(120%);
+    animation: slideInRight 0.4s forwards;
+    border-left: 5px solid;
+}
+
+/* Colors based on tags */
+.toast.success { border-left-color: #10b981; color: #065f46; }
+.toast.success i { color: #10b981; font-size: 18px; }
+
+.toast.warning { border-left-color: #ef4444; color: #991b1b; }
+.toast.warning i { color: #ef4444; font-size: 18px; }
+
+/* Animation for sliding in */
+@keyframes slideInRight {
+    to { transform: translateX(0); }
+}
+
+/* Animation for sliding out (hiding) */
+.toast.hide {
+    animation: slideOutRight 0.4s forwards;
+}
+
+@keyframes slideOutRight {
+    to { transform: translateX(120%); opacity: 0; }
+}
+
+
+
+/* ---- PAGINATION CSS ---- */
+.pagination-container {
+    display: flex;
+    justify-content: flex-end; /* Buttons ko right side me rakhne ke liye */
+    padding: 15px 20px;
+    background-color: var(--card-bg);
+    border-top: 1px solid var(--border);
+    border-radius: 0 0 10px 10px;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.page-btn {
+    padding: 6px 12px;
+    text-decoration: none;
+    background-color: var(--bg-color);
+    color: var(--text-dark);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.page-btn:hover:not(.disabled) {
+    background-color: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.current-page {
+    font-size: 13px;
+    color: var(--text-gray);
+    margin: 0 10px;
+}
+
+.page-btn.disabled {
+    color: #9ca3af;
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+    border-color: #e5e7eb;
+}

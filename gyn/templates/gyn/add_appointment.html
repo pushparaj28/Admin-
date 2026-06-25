@@ -1,0 +1,29 @@
+{% extends 'gyn/base.html' %}
+
+<h2 style="margin-bottom: 20px; color: var(--primary);">
+    {% if is_edit %}Edit Appointment{% else %}Create Appointment{% endif %}
+</h2>
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto; margin-top: 20px;">
+    <h2 style="margin-bottom: 20px; color: var(--primary);">Create Appointment</h2>
+    
+    <form method="POST">
+        {% csrf_token %} <div style="display: flex; flex-direction: column; gap: 15px;">
+            {% for field in form %}
+                <div style="display: flex; flex-direction: column;">
+                    <label style="font-size: 14px; color: var(--text-gray); margin-bottom: 5px; font-weight: 500;">
+                        {{ field.label }}
+                    </label>
+                    {{ field }}
+                </div>
+            {% endfor %}
+            
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button type="submit" class="btn btn-primary">Save Appointment</button>
+                <a href="{% url 'appointments' %}" class="btn btn-secondary" style="text-decoration: none;">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

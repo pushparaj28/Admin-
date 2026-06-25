@@ -1,0 +1,14 @@
+{% extends 'gyn/base.html' %}
+
+{% block page_title %}Coming Soon{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: center; align-items: center; height: 60vh;">
+    <div style="text-align: center; color: var(--text-gray);">
+        <i class="fa-solid fa-person-digging" style="font-size: 60px; margin-bottom: 20px; color: #cbd5e1;"></i>
+        <h2 >अभी थोडा काम चल  रहा है <BR></BR>तो इतनें आप Appointment वाला पेज देखो 🧑‍💻</h2>
+        <br>
+        <a href="{% url 'appointments' %}" class="btn btn-primary" style="text-decoration: none;">Go to Appointments</a>
+    </div>
+</div>
+{% endblock %}
