@@ -5,6 +5,8 @@ from django.contrib import messages #tost message ke pribuilt libaray
 from django.core.paginator import Paginator #page ke liye perebuilt 
 from django.db.models import Q #earch fiter ke liye 
 from datetime import date #date time model
+import calendar
+from datetime import datetime
 from .models import Appointment 
 from .forms import AppointmentForm # Agar model ka naam kuch aur hai to change kar lena
 
@@ -94,3 +96,52 @@ def delete_appointment(request, id):
 #aane vele pages ke liye banaya gya simple hmtl page.  
 def coming_soon(request):
     return render(request, 'gyn/coming_soon.html')
+
+
+   #ye function hai growth insights ka +chart show karana=e ka.  
+def growth_insights(request):
+    # --- 1. KPI Cards Ka Purana Logic ---
+    total_appointments = Appointment.objects.count()
+    completed_count = Appointment.objects.filter(status='Confirmed').count() 
+    pending_count = Appointment.objects.filter(status='Pending').count()
+    cancelled_count = Appointment.objects.filter(status='Cancelled').count()
+
+    cancellation_rate = 0
+    if total_appointments > 0:
+        cancellation_rate = round((cancelled_count / total_appointments) * 100, 1)
+
+    status_data = [completed_count, pending_count, cancelled_count]
+
+    # --- 2. LINE CHART KA NAYA LOGIC (Pichle 6 Mahine) ---
+    today = datetime.today()
+    trend_labels = []
+    trend_data = []
+
+    for i in range(5, -1, -1): # Pichle 6 mahine calculate karne ke liye loop
+        m = today.month - i
+        y = today.year
+        if m <= 0:
+            m += 12
+            y -= 1
+        
+        # Mahine ka naam nikalna (jaise: Jan, Feb)
+        month_name = f"{calendar.month_abbr[m]} {y}" 
+        trend_labels.append(month_name)
+        
+        # Us mahine me kitni appointment aayi, wo count karna
+        count = Appointment.objects.filter(appointment_date__year=y, appointment_date__month=m).count()
+        trend_data.append(count)
+
+    # --- 3. Context me Data Bhejna ---
+    context = {
+        'total_appointments': total_appointments,
+        'completed_count': completed_count,
+        'pending_count': pending_count,
+        'cancellation_rate': cancellation_rate,
+        'status_data': status_data,
+        
+        'trend_labels': trend_labels, # Naya data
+        'trend_data': trend_data,     # Naya data
+    }
+    
+    return render(request, 'gyn/growth_insights.html', context)

@@ -15,7 +15,9 @@ urlpatterns = [
 
     #Delete ke liye. hai ye url
     path('delete-appointment/<int:id>/', views.delete_appointment, name='delete_appointment'), 
-
+ 
+     # urls.py me
+    path('growth-insights/', views.growth_insights, name='growth_insights'),
 
 
     path('dashboard/', views.coming_soon, name='dashboard'),
@@ -26,4 +28,5 @@ urlpatterns = [
     path('reviews/', views.coming_soon, name='reviews'),
     path('availability/', views.coming_soon, name='availability'),
     path('settings/', views.coming_soon, name='settings'),
+    
 ]

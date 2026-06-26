@@ -1,0 +1,103 @@
+{% extends 'gyn/base.html' %}
+{% load static %}
+
+{% block page_title %}Growth Insights{% endblock %}
+
+{% block content %}
+<div class="analytics-wrapper">
+    <div class="analytics-header">
+        <div>
+            <p class="subtitle">ANALYTICS</p>
+            <h2>Growth Insights</h2>
+            <p class="desc">Track your practice performance & patient engagement</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-secondary active">Weekly</button>
+            <button class="btn btn-primary">Monthly</button>
+        </div>
+    </div>
+
+    <div class="kpi-dashboard-grid">
+        
+        <div class="analytic-card">
+            <div class="card-top">
+                <div class="icon-box blue"><i class="fa-regular fa-calendar"></i></div>
+                <span class="badge positive"><i class="fa-solid fa-arrow-trend-up"></i> +12%</span>
+            </div>
+            <h3 class="metric-value">{{ total_appointments }}</h3>
+            <p class="metric-title">Total Appointments</p>
+            <p class="metric-sub">vs prev month</p>
+        </div>
+
+        <div class="analytic-card">
+            <div class="card-top">
+                <div class="icon-box green"><i class="fa-regular fa-circle-check"></i></div>
+                <span class="badge positive"><i class="fa-solid fa-arrow-trend-up"></i> +5%</span>
+            </div>
+            <h3 class="metric-value">{{ completed_count }}</h3>
+            <p class="metric-title">Completed Consultations</p>
+            <p class="metric-sub">Active patients</p>
+        </div>
+
+        <div class="analytic-card">
+            <div class="card-top">
+                <div class="icon-box orange"><i class="fa-regular fa-clock"></i></div>
+                <span class="badge neutral">Steady</span>
+            </div>
+            <h3 class="metric-value">{{ pending_count }}</h3>
+            <p class="metric-title">Pending Action</p>
+            <p class="metric-sub">Awaiting confirmation</p>
+        </div>
+
+        <div class="analytic-card">
+            <div class="card-top">
+                <div class="icon-box red"><i class="fa-solid fa-ban"></i></div>
+                <span class="badge negative"><i class="fa-solid fa-arrow-trend-down"></i> -2%</span>
+            </div>
+            <h3 class="metric-value">{{ cancellation_rate }}%</h3>
+            <p class="metric-title">Cancellation Rate</p>
+            <p class="metric-sub">of all appointments</p>
+        </div>
+        
+    </div> <div class="charts-grid">
+        <div class="chart-card large-chart">
+            <div class="chart-header">
+                <div>
+                    <h3>Appointment Trends</h3>
+                    <p>Monthly breakdown</p>
+                </div>
+                <button class="btn-icon"><i class="fa-solid fa-chart-line"></i></button>
+            </div>
+            
+            <div class="chart-body" style="height: 300px; background: none; border: none; padding: 10px; position: relative;">
+                <canvas id="trendChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card small-chart">
+            <div class="chart-header">
+                <div>
+                    <h3>Appointment Status</h3>
+                    <p>Overall breakdown</p>
+                </div>
+            </div>
+            
+            <div class="chart-body" style="height: 250px; background: none; border: none; position: relative;">
+                <canvas id="statusChart"></canvas> 
+            </div>
+            
+            <div class="chart-legend">
+                <div class="legend-item"><span class="dot green"></span> Completed <strong>{{ completed_count }}</strong></div>
+                <div class="legend-item"><span class="dot orange"></span> Pending <strong>{{ pending_count }}</strong></div>
+                <div class="legend-item"><span class="dot red"></span> Cancelled <strong>{{ cancelled_count }}</strong></div>
+            </div>
+        </div>
+        
+    </div> 
+   
+    {{ status_data|json_script:"chartData" }}
+    {{ trend_labels|json_script:"trendLabels" }}  {{ trend_data|json_script:"trendData" }}    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+        
+    </div> </div> {% endblock %}

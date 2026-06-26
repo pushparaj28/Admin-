@@ -352,3 +352,205 @@ body { background-color: var(--bg-color); color: var(--text-dark); }
     cursor: not-allowed;
     border-color: #e5e7eb;
 }
+
+/* =========================================
+   ANALYTICS DASHBOARD CSS
+   ========================================= */
+
+   .analytics-wrapper {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* Header */
+.analytics-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.analytics-header .subtitle {
+    color: #14b8a6;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.analytics-header h2 {
+    font-size: 28px;
+    color: var(--text-dark);
+    margin-bottom: 5px;
+}
+
+.analytics-header .desc {
+    color: var(--text-gray);
+    font-size: 14px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+    background: #f1f5f9;
+    padding: 5px;
+    border-radius: 8px;
+}
+
+/* KPI Grid */
+.kpi-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.analytic-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    border: 1px solid #f1f5f9;
+    transition: transform 0.2s ease;
+}
+
+.analytic-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+}
+
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.icon-box {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.icon-box.blue { background: #e0f2fe; color: #0284c7; }
+.icon-box.green { background: #dcfce7; color: #16a34a; }
+.icon-box.orange { background: #ffedd5; color: #ea580c; }
+.icon-box.red { background: #fee2e2; color: #dc2626; }
+
+.badge {
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge.positive { background: #dcfce7; color: #16a34a; }
+.badge.negative { background: #fee2e2; color: #dc2626; }
+.badge.neutral { background: #f1f5f9; color: #64748b; }
+
+.metric-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 5px;
+}
+
+.metric-title {
+    font-size: 14px;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+.metric-sub {
+    font-size: 12px;
+    color: var(--text-gray);
+    margin-top: 2px;
+}
+
+/* Charts Grid */
+.charts-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* Line chart ko zyada jagah, donut ko kam */
+    gap: 20px;
+}
+
+.chart-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    border: 1px solid #f1f5f9;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.chart-header h3 {
+    font-size: 16px;
+    color: var(--text-dark);
+}
+
+.chart-header p {
+    font-size: 13px;
+    color: var(--text-gray);
+    margin-top: 4px;
+}
+
+/* Temporary placeholders (Jab tak JS nahi lagate) */
+.chart-body {
+    min-height: 250px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px dashed #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+}
+
+.placeholder-circle {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 20px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chart-legend {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: var(--text-gray);
+    justify-content: space-between;
+}
+
+.legend-item .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 10px;
+    display: inline-block;
+}
+
+.legend-item .dot.green { background: #16a34a; }
+.legend-item .dot.orange { background: #ea580c; }
+.legend-item .dot.red { background: #dc2626; }
+.legend-item strong { color: var(--text-dark); }
