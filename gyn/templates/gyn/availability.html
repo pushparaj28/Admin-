@@ -1,0 +1,211 @@
+{% extends 'gyn/base.html' %}
+{% load static %}
+
+{% block page_title %}Manage Availability{% endblock %}
+
+{% block content %}
+<div class="avail-wrapper">
+    
+    <div class="avail-kpi-grid">
+        <div class="avail-kpi-card">
+            <div class="kpi-icon teal-light"><i class="fa-regular fa-clock"></i></div>
+            <div class="kpi-info">
+                <p class="kpi-title">Weekly Hours <span class="badge-small">This Week</span></p>
+                <h3>{{ weekly_hours }} <span>hrs</span></h3>
+                <p class="kpi-trend positive"><i class="fa-solid fa-arrow-trend-up"></i> +0% vs last week</p>
+            </div>
+        </div>
+
+        <div class="avail-kpi-card">
+            <div class="kpi-icon blue-light"><i class="fa-regular fa-calendar-check"></i></div>
+            <div class="kpi-info">
+                <p class="kpi-title">Active Days <span class="badge-small blue-badge">Active</span></p>
+                <h3>{{ active_days }} <span>days</span></h3>
+                <div class="days-dots">
+                    <span class="dot active"></span><span class="dot active"></span><span class="dot active"></span><span class="dot active"></span><span class="dot inactive"></span><span class="dot inactive"></span><span class="dot inactive"></span>
+                    <span class="dot-text">working this week</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="avail-kpi-card">
+            <div class="kpi-icon purple-light"><i class="fa-solid fa-stopwatch"></i></div>
+            <div class="kpi-info">
+                <p class="kpi-title">Consultation Time <span class="badge-small purple-badge">Average</span></p>
+                <h3>{{ avg_consult_time }} <span>min</span></h3>
+                <p class="kpi-trend neutral">No Data this week</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="avail-main-grid">
+        
+        <div class="avail-panel">
+            <div class="panel-header">
+                <div>
+                    <h2>Doctor Slot Creation <i class="fa-solid fa-circle-info info-icon"></i></h2>
+                    <p>Manage your daily consultation timings.</p>
+                </div>
+                <div class="interval-select">
+                    <label>Interval:</label>
+                    <select class="input-box small-select">
+                        <option>15 Minutes</option>
+                        <option selected>30 Minutes</option>
+                        <option>45 Minutes</option>
+                        <option>60 Minutes</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="day-tabs">
+                <button class="day-tab active">Monday</button>
+                <button class="day-tab">Tuesday</button>
+                <button class="day-tab">Wednesday</button>
+                <button class="day-tab">Thursday</button>
+                <button class="day-tab">Friday</button>
+                <button class="day-tab">Saturday</button>
+                <button class="day-tab">Sunday</button>
+            </div>
+
+            <div class="slot-action-bar">
+                <label class="toggle-switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                    <span class="toggle-label">Mark as Holiday</span>
+                </label>
+                <button class="btn btn-primary" id="addSlotBtn"><i class="fa-solid fa-plus"></i> Add Slot</button>
+            </div>
+
+            <div id="slots-container">
+                <div class="empty-slot-state" id="empty-state">
+                    <i class="fa-regular fa-clock"></i>
+                    <p>No slots for this day yet.</p>
+                </div>
+            </div>
+
+            <template id="slot-template">
+                <div class="slot-row">
+                    <div class="slot-group">
+                        <label>TYPE</label>
+                        <select class="input-box">
+                            <option>Available</option>
+                            <option>Busy</option>
+                        </select>
+                    </div>
+                    <div class="slot-group">
+                        <label>START</label>
+                        <input type="time" class="input-box">
+                    </div>
+                    <div class="slot-group">
+                        <label>END</label>
+                        <input type="time" class="input-box">
+                    </div>
+                    <button type="button" class="btn-icon danger delete-slot-btn">
+                        <i class="fa-regular fa-trash-can"></i>
+                    </button>
+                </div>
+            </template>
+
+            <div class="panel-footer">
+                <button class="btn btn-secondary">Reset</button>
+                <div class="right-actions">
+                    <button class="btn btn-outline"><i class="fa-regular fa-copy"></i> Apply to Other Days</button>
+                    <button class="btn btn-primary" id="saveScheduleBtn">Save Schedule</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="avail-panel">
+            <div class="panel-header">
+                <div>
+                    <h2>Time Off & Holidays</h2>
+                    <p>Schedule your planned leaves.</p>
+                </div>
+                <button class="btn btn-primary" id="applyLeaveBtn"><i class="fa-solid fa-suitcase-medical"></i> Apply Leave</button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="avail-table">
+                    <thead>
+                        <tr>
+                            <th>DATE RANGE</th>
+                            <th>REASON</th>
+                            <th>STATUS</th>
+                            <th>DURATION</th> <th>ACTION</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaveTableBody">
+                        </tbody>
+                </table>
+            </div>
+
+            <div class="pagination-simple">
+                <span>Page 1 of 1</span>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal-box">
+        <div class="modal-icon-warning">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <h3>Delete Time Slot?</h3>
+        <p>Are you sure you want to remove this slot? This action cannot be undone.</p>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" id="cancelDeleteBtn">Cancel</button>
+            <button class="btn btn-danger" id="confirmDeleteBtn">Yes, Delete</button>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal-overlay" id="leaveModal">
+    <div class="modal-box" style="text-align: left; width: 420px;">
+        <div class="panel-header" style="margin-bottom: 20px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px;">
+            <h2 style="margin:0;">Apply Time Off</h2>
+            <i class="fa-solid fa-xmark" id="closeLeaveBtn" style="cursor: pointer; font-size: 18px; color: #64748b;"></i>
+        </div>
+        
+        <form id="leaveForm">
+            <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                <div style="flex: 1;">
+                    <label style="font-size: 11px; font-weight: 700; color: #64748b;">START DATE</label>
+                    <input type="date" id="leaveStart" class="input-box" required style="width: 100%; margin-top: 5px; height: 38px;">
+                </div>
+                <div style="flex: 1;">
+                    <label style="font-size: 11px; font-weight: 700; color: #64748b;">END DATE</label>
+                    <input type="date" id="leaveEnd" class="input-box" required style="width: 100%; margin-top: 5px; height: 38px;">
+                </div>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label style="font-size: 11px; font-weight: 700; color: #64748b;">REASON</label>
+                <select id="leaveReason" class="input-box" required style="width: 100%; margin-top: 5px; height: 38px;">
+                    <option value="" disabled selected>Select a reason...</option>
+                    <option value="Sick Leave">Sick Leave</option>
+                    <option value="Vacation">Vacation</option>
+                    <option value="Family Emergency">Family Emergency</option>
+                    <option value="Conference/Seminar">Conference/Seminar</option>
+                    <option value="Personal Reason">Personal Reason</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <label style="font-size: 11px; font-weight: 700; color: #64748b;">DESCRIPTION (Optional)</label>
+                <textarea id="leaveDesc" class="input-box" rows="2" placeholder="Brief details..." style="width: 100%; margin-top: 5px; resize: none; padding: 10px;"></textarea>
+            </div>
+
+            <div class="modal-actions" style="justify-content: flex-end;">
+                <button type="button" class="btn btn-secondary" id="cancelLeaveBtn">Cancel</button>
+                <button type="submit" class="btn btn-primary">Submit Request</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</div> </div> <script src="{% static 'js/script.js' %}"></script>
+
+{% endblock %}

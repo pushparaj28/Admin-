@@ -1,0 +1,204 @@
+{% extends 'gyn/base.html' %}
+{% load static %}
+
+{% block page_title %}Earnings & Payouts{% endblock %}
+
+{% block content %}
+<div class="earnings-dashboard">
+    <div class="filter-bar" style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #fff; border-radius: 8px; margin-bottom: 25px;">
+    
+        <!-- LEFT SIDE: Filters (Form bana diya gaya hai) -->
+        <form method="GET" class="filter-left" style="display: flex; align-items: center; gap: 15px; margin: 0;">
+            <span style="color: #6b7280; font-weight: 500;">Filter Range:</span>
+            
+            <!-- onchange="this.form.submit()" automatically filter apply kar dega bina button dabaye -->
+            <select name="date_filter" class="filter-dropdown" onchange="this.form.submit()" style="padding: 5px 10px; border-radius: 4px; border: 1px solid #d1d5db;">
+                <option value="all" {% if current_filter == 'all' %}selected{% endif %}>All Time</option>
+                <option value="this_month" {% if current_filter == 'this_month' %}selected{% endif %}>This Month</option>
+                <option value="last_month" {% if current_filter == 'last_month' %}selected{% endif %}>Last Month</option>
+            </select>
+            
+            <!-- Reset button ek simple link ban gaya hai jo URL ko clear kar dega -->
+            <a href="{% url 'earnings' %}" class="btn-reset" style="text-decoration: none; color: #4b5563; padding: 5px 10px; border: 1px solid #d1d5db; border-radius: 4px; background: #f9fafb;">
+                <i class="fa-solid fa-rotate-right"></i> Reset
+            </a>
+        </form>
+    
+        <!-- RIGHT SIDE: Add Button -->
+        <div class="filter-right">
+            <a href="{% url 'add_earning' %}" class="btn-add-purple" style="background: #5a4fcf; color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: 600;">
+                + Add Earning
+            </a>
+        </div>
+    
+    </div>
+
+    <div class="e-kpi-grid">
+        
+        <div class="e-kpi-card">
+            <div class="e-kpi-content">
+                <p class="e-kpi-title">TOTAL EARNING MONEY</p>
+                <h2 class="e-kpi-value">₹{{ total_earnings }}</h2>
+                <p class="e-kpi-subtext text-green"><i class="fa-solid fa-arrow-up"></i> Active</p>
+            </div>
+            <div class="e-kpi-icon bg-green-box">
+                <i class="fa-solid fa-wallet"></i>
+            </div>
+        </div>
+
+        <div class="e-kpi-card">
+            <div class="e-kpi-content">
+                <p class="e-kpi-title">PENDING PAYMENTS</p>
+                <h2 class="e-kpi-value">₹{{ pending_payments }}</h2>
+                <p class="e-kpi-subtext text-orange">Awaiting Settlement</p>
+            </div>
+            <div class="e-kpi-icon bg-orange-box">
+                <i class="fa-solid fa-hourglass-half"></i>
+            </div>
+        </div>
+
+        <div class="e-kpi-card">
+            <div class="e-kpi-content">
+                <p class="e-kpi-title">TOTAL WITHDRAWN</p>
+                <h2 class="e-kpi-value">₹{{ total_withdrawn }}</h2>
+                <p class="e-kpi-subtext text-grey">Payouts Processed</p>
+            </div>
+            <div class="e-kpi-icon bg-pink-box">
+                <i class="fa-solid fa-building-columns"></i>
+            </div>
+        </div>
+
+        <div class="e-kpi-card">
+            <div class="e-kpi-content">
+                <p class="e-kpi-title">CONSULTATION COUNT</p>
+                <h2 class="e-kpi-value">{{ consultation_count }}</h2>
+                <p class="e-kpi-subtext text-green">Total Sessions</p>
+            </div>
+            <div class="e-kpi-icon bg-purple-box">
+                <i class="fa-solid fa-stethoscope"></i>
+            </div>
+        </div>
+
+        <div class="e-kpi-card">
+            <div class="e-kpi-content">
+                <p class="e-kpi-title">AVERAGE FEE</p>
+                <h2 class="e-kpi-value">₹{{ average_fee }}</h2>
+                <p class="e-kpi-subtext text-grey">Per Session</p>
+            </div>
+            <div class="e-kpi-icon bg-teal-box">
+                <i class="fa-solid fa-indian-rupee-sign"></i>
+            </div>
+        </div>
+
+    </div>
+    
+    <div class="e-charts-section">
+        
+        <div class="e-chart-card trend-card">
+            <div class="e-card-header">
+                <h3>Earnings Trend</h3>
+                <p class="text-grey">Daily breakdown</p>
+            </div>
+            <div class="chart-container" style="position: relative; height: 300px; width: 100%;">
+                <canvas id="earningsTrendChart" 
+                        data-labels='{{ chart_labels|safe }}' 
+                        data-values='{{ chart_data|safe }}'></canvas>
+            </div>
+        </div>
+
+        <div class="e-chart-card breakdown-card">
+            <div class="e-card-header">
+                <h3>Earning Breakdown</h3>
+                <p class="text-grey" style="text-transform: uppercase; font-size: 11px;">By Payment Status</p>
+            </div>
+            <div class="chart-container" style="position: relative; height: 250px; width: 100%; display: flex; align-items: center; justify-content: center;">
+                
+                <canvas id="earningBreakdownChart"
+                        data-labels='{{ breakdown_labels|safe }}' 
+                        data-values='{{ breakdown_data|safe }}'>
+                </canvas>
+                
+            </div>
+        </div>
+    </div>
+
+    <div class="e-chart-card mt-20">
+        <div class="e-card-header">
+            <h3>Commission Transparency</h3>
+        </div>
+        <div class="table-responsive">
+            <table class="e-table">
+                <thead>
+                    <tr>
+                        <th>TYPE</th>
+                        <th>TOTAL FEE (₹)</th>
+                        <th>PLATFORM FEE (₹)</th>
+                        <th>DOCTOR RECEIVES (₹)</th>
+                        <th>STATUS</th>
+                        <th>ACTIONS</th> <!-- MISSING HEADING ADD KAR DI -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for earning in recent_earnings %}
+                    <tr>
+                        <td><strong>{{ earning.patient_name }}</strong></td>
+                        <td>₹{{ earning.amount }}</td>
+                        
+                        <!-- 20% Calculation (Space fix kar diya) -->
+                        <td>₹{% widthratio earning.amount 100 20 %} <span class="text-grey">(20%)</span></td>
+                        
+                        <!-- 80% Calculation (90 ki jagah 80 kar diya) -->
+                        <td><strong>₹{% widthratio earning.amount 100 80 %}</strong></td>
+                        
+                        <td>
+                            {% if earning.status == 'Completed' %}
+                                <span class="badge bg-green-light text-green">Completed</span>
+                            {% elif earning.status == 'Pending' %}
+                                <span class="badge bg-orange-light text-orange">Pending</span>
+                            {% else %}
+                                <span class="badge" style="background: #f3f4f6; color: #6b7280;">Withdrawn</span>
+                            {% endif %}
+                        </td>
+                        
+                        <td>
+                            <a href="{% url 'edit_earning' earning.id %}" style="color: #4b5563; margin-right: 10px;"><i class="fa-solid fa-pen"></i></a>
+                            <a href="{% url 'delete_earning' earning.id %}" onclick="return confirm('Delete this record?');" style="color: #ef4444;"><i class="fa-solid fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 30px; color: #9ca3af;">No commission details found. Click "Add Earning" to start.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- === PAGINATION CONTROLS === -->
+        <div class="pagination-wrapper">
+            <span class="step-links">
+                {% if recent_earnings.has_previous %}
+                    <a href="?page=1" class="btn-page">&laquo; First</a>
+                    <a href="?page={{ recent_earnings.previous_page_number }}" class="btn-page">Previous</a>
+                {% endif %}
+    
+                <span class="current-page">
+                    Page <strong>{{ recent_earnings.number }}</strong> of {{ recent_earnings.paginator.num_pages }}
+                </span>
+    
+                {% if recent_earnings.has_next %}
+                    <a href="?page={{ recent_earnings.next_page_number }}" class="btn-page">Next</a>
+                    <a href="?page={{ recent_earnings.paginator.num_pages }}" class="btn-page">Last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+        <!-- =========================== -->
+    </div>
+
+<!-- Data for JS -->
+{{ chart_labels|json_script:"earnLabels" }}
+{{ chart_data|json_script:"earnData" }}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<script src="{% static 'js/script.js' %}"></script>
+{% endblock %}

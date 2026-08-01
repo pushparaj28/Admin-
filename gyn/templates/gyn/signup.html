@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Smart Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="auth-body-modern">
+    
+    <div class="auth-wrapper">
+        <div class="auth-card-modern">
+            
+            <div class="auth-image-side" style="border-left-color: #5a4fcf;">
+                <img src="https://cdni.iconscout.com/illustration/premium/thumb/create-account-illustration-svg-download-png-6110939.png" alt="Join Us" class="illustration-img">
+            </div>
+
+            <div class="auth-form-side">
+                <div class="form-content">
+                    <h2 style="font-size: 28px;">Create an Account For Doctor </h2>
+                    <p class="auth-subtitle">Join us and manage your workflow</p>
+                    
+                    <form method="POST" class="auth-form" id="signupForm">
+                        {% csrf_token %}
+                        
+                        {% for field in form %}
+                            <div class="auth-field">
+                                {{ field }}
+                            </div>
+                        {% endfor %}
+                        
+                        {% if form.errors %}
+                            <div class="auth-errors">
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <p style="margin: 0; padding-bottom: 3px;"><i class="fa-solid fa-circle-exclamation"></i> {{ error }}</p>
+                                    {% endfor %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <button type="submit" class="btn-auth-modern" style="background: #5a4fcf; margin-top: 10px;">Sign Up</button>
+                    </form>
+                    
+                    <span class="auth-link-text">Already have an account? <a href="{% url 'login' %}" style="color: #5a4fcf;">Log in</a></span>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+</body>
+</html>

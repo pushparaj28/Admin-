@@ -6,34 +6,56 @@
 {% block content %}
 <div id="appointments-page">
     
-    <div class="card-grid">
-        <div class="card">
-            <div class="card-icon blue"><i class="fa-regular fa-calendar"></i></div>
-            <p class="card-title">Total Bookings</p>
-            <h3 class="card-value">{{ total_bookings }}</h3> 
-            <p class="card-status success">All time records</p>
+    <div class="premium-kit-grid">
+    
+        <div class="kit-card theme-blue">
+            <div class="kit-header">
+                <h2 class="kit-value">{{ total_bookings }}</h2>
+                <div class="kit-icon"><i class="fa-regular fa-calendar"></i></div>
+            </div>
+            <div class="kit-divider"></div>
+            <h3 class="kit-title">Total Bookings</h3>
+            <div class="kit-details">
+                <p><i class="fa-solid fa-arrow-trend-up"></i> All time records</p>
+            </div>
         </div>
-        
-        <div class="card">
-            <div class="card-icon indigo"><i class="fa-solid fa-user-doctor"></i></div>
-            <p class="card-title">Today's Bookings</p>
-            <h3 class="card-value">{{ todays_bookings }}</h3> 
-            <p class="card-status success">Scheduled for today</p>
+    
+        <div class="kit-card theme-purple">
+            <div class="kit-header">
+                <h2 class="kit-value">{{ todays_bookings }}</h2>
+                <div class="kit-icon"><i class="fa-solid fa-user-doctor"></i></div>
+            </div>
+            <div class="kit-divider"></div>
+            <h3 class="kit-title">Today's Bookings</h3>
+            <div class="kit-details">
+                <p><i class="fa-regular fa-clock"></i> Scheduled for today</p>
+            </div>
         </div>
-        
-        <div class="card">
-            <div class="card-icon green"><i class="fa-regular fa-circle-check"></i></div>
-            <p class="card-title">Confirmed</p>
-            <h3 class="card-value">{{ confirmed_bookings }}</h3> 
-            <p class="card-status success">Active Status</p>
+    
+        <div class="kit-card theme-green">
+            <div class="kit-header">
+                <h2 class="kit-value">{{ confirmed_bookings }}</h2>
+                <div class="kit-icon"><i class="fa-regular fa-circle-check"></i></div>
+            </div>
+            <div class="kit-divider"></div>
+            <h3 class="kit-title">Confirmed</h3>
+            <div class="kit-details">
+                <p><i class="fa-solid fa-check-double"></i> Active Status</p>
+            </div>
         </div>
-        
-        <div class="card">
-            <div class="card-icon orange"><i class="fa-regular fa-clock"></i></div>
-            <p class="card-title">Pending Action</p>
-            <h3 class="card-value">{{ pending_bookings }}</h3> 
-            <p class="card-status warning">Awaiting Reply</p>
+    
+        <div class="kit-card theme-orange">
+            <div class="kit-header">
+                <h2 class="kit-value">{{ pending_bookings }}</h2>
+                <div class="kit-icon"><i class="fa-regular fa-hourglass-half"></i></div>
+            </div>
+            <div class="kit-divider"></div>
+            <h3 class="kit-title">Pending Action</h3>
+            <div class="kit-details">
+                <p><i class="fa-solid fa-reply"></i> Awaiting Reply</p>
+            </div>
         </div>
+    
     </div>
 
     <div class="table-container">
@@ -47,10 +69,34 @@
                     <a href="{% url 'appointments' %}" class="btn btn-secondary" style="text-decoration: none; display: flex; align-items: center; color: #ef4444;">Clear</a>
                 {% endif %}
             </form>
+
+            <div class="filter-section">
+                <form method="GET" action="" class="filter-form">
+                    <div class="filter-group">
+                        <input type="date" name="start_date" id="start_date" class="filter-input" value="{{ request.GET.start_date }}">
+                    </div>
+                    
+                    <span class="filter-separator">-</span>
+                    
+                    <div class="filter-group">
+                        <input type="date" name="end_date" id="end_date" class="filter-input" value="{{ request.GET.end_date }}">
+                    </div>
+            
+                    <a href="{% url 'appointments' %}" class="btn-filter-reset">
+                        Reset <i class="fa-solid fa-rotate-right"></i>
+                    </a>
+                    <button type="submit" class="btn-filter-apply">Filter<i class="fa-solid fa-filter"></i>
+                    </button>
+                </form>
+            </div>
+
+
             <div class="right-controls">
+               
                 <a href="{% url 'add_appointment' %}" class="btn btn-primary">
                     <i class="fa-solid fa-plus"></i> Add Appointment
                 </a>
+            
             </div>
         </div>
 
@@ -63,7 +109,7 @@
                         <th>Email</th>
                         <th>Date & Time</th>
                         <th>Status</th>
-                        <th>Action</th>
+                        <th>Action</th> 
                     </tr>
                 </thead>
                 <tbody>
@@ -73,18 +119,19 @@
                         <td>{{ appt.patient_name }}</td>
                         <td>{{ appt.email }}</td>
                         <td>{{ appt.appointment_date }} <br> <span style="color: gray; font-size: 12px;">{{ appt.appointment_time }}</span></td>
+                       
+                        <!-- check status  -->
                         <td>
-                            {% if appt.status == 'Confirmed' %}
-                                <span class="success">{{ appt.status }}</span>
-                            {% elif appt.status == 'Pending' %}
-                                <span class="warning">{{ appt.status }}</span>
-                            {% else %}
-                                <span>{{ appt.status }}</span>
-                            {% endif %}
+                            <span class="status-badge status-{{ appt.status|lower }}">
+                                {{ appt.status }}
+                            </span>
+                       
                         </td>
-                        <td>
-                            <a href="{% url 'edit_appointment' appt.id %}" class="btn btn-secondary" style="text-decoration: none; padding: 4px 8px; font-size: 13px;">Edit</a>
-                            <a href="{% url 'delete_appointment' appt.id %}" class="btn btn-secondary text-danger delete-btn" style="text-decoration: none; padding: 4px 8px; font-size: 13px;">
+                        <td class="table-actions">
+                            <a href="{% url 'edit_appointment' appt.id %}" class="action-btn btn-edit">
+                                Edit
+                            </a>
+                            <a href="{% url 'delete_appointment' appt.id %}" class="action-btn btn-delete" onclick="return confirm('Are you sure?');">
                                 Delete
                             </a>
                         </td>
@@ -98,13 +145,21 @@
             </table>
         </div>
 
+
+        
+
 <!-- Pagination ke liye banai template  -->
         <div class="pagination-container">
             <div class="pagination">
                 
                 {% if appointments.has_previous %}
-                    <a href="?page=1" class="page-btn">&laquo; First</a>
-                    <a href="?page={{ appointments.previous_page_number }}" class="page-btn">Previous</a>
+                <a href="?page=1{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="page-btn">
+                    &laquo; First
+                </a>
+                
+                <a href="?page={{ appointments.previous_page_number }}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="page-btn">
+                    Previous
+                </a>
                 {% else %}
                     <span class="page-btn disabled">&laquo; First</span>
                     <span class="page-btn disabled">Previous</span>
@@ -115,8 +170,13 @@
                 </span>
         
                 {% if appointments.has_next %}
-                    <a href="?page={{ appointments.next_page_number }}" class="page-btn">Next</a>
-                    <a href="?page={{ appointments.paginator.num_pages }}" class="page-btn">Last &raquo;</a>
+                <a href="?page={{ appointments.next_page_number }}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="page-btn">
+                    Next
+                </a>
+                
+                <a href="?page={{ appointments.paginator.num_pages }}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="page-btn">
+                    Last &raquo;
+                </a>
                 {% else %}
                     <span class="page-btn disabled">Next</span>
                     <span class="page-btn disabled">Last &raquo;</span>

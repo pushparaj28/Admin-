@@ -1,0 +1,63 @@
+<!-- gyn/manage_doctors.html -->
+{% extends 'gyn/base.html' %}
+{% load static %}
+{% block page_title %}Docctor Management{% endblock %}
+
+{% block content %}
+
+<div class="doctor-card">
+  <table class="modern-table">
+    <thead>
+      <tr>
+        <th>DOCTOR</th>
+        <th>EMAIL</th>
+        <th>JOINED</th>
+        <th>ACTION</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for doctor in doctors %}
+      <tr>
+        <td>
+          <div class="doctor-info">
+            <div class="avatar">
+              {{ doctor.username|slice:":1"|upper }}
+            </div>
+            <span>
+              {{ doctor.username }}</span>
+          </div>
+        </td>
+        <td>
+          {{ doctor.email }}
+        </td>
+        <td>
+          {{ doctor.date_joined|date:"d M Y" }}
+        </td>
+        <!-- Table row ke andar -->
+        <td class="doctor-mng-actions">
+            <!-- Login Button -->
+            <a href="{% url 'impersonate_doctor' doctor.id %}" class="doc-btn doc-btn-login">Login</a>
+        
+            <!-- ADMIN TOGGLE: Yahan check karein -->
+            {% if doctor.is_superuser or doctor.is_staff %}
+                <a href="{% url 'toggle_admin' doctor.id %}" class="doc-btn btn-remove-admin">
+                    Remove Admin
+                </a>
+            {% else %}
+                <a href="{% url 'toggle_admin' doctor.id %}" class="doc-btn btn-make-admin">
+                    Make Admin
+                </a>
+            {% endif %}
+        
+            <!-- Delete Button -->
+            <a href="{% url 'delete_doctor' doctor.id %}" class="doc-btn doc-btn-delete" onclick="return confirm('Are you sure?');">
+                Delete
+            </a>
+        </td>
+      </tr>
+      {% endfor %}
+      
+    </tbody>
+  </table>
+</div>
+{% endblock %}

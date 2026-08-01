@@ -1,0 +1,42 @@
+{% extends 'gyn/base.html' %}
+
+{% block content %}
+<div class="premium-dashboard" style="max-width: 600px; margin: 40px auto;">
+    <div class="sidebar-box" style="background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+        <h2 style="margin-top: 0; color: #111827;">{{ title }}</h2>
+        <hr style="border: none; border-top: 1px solid #f3f4f6; margin-bottom: 20px;">
+        
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div style="margin-bottom: 15px;">
+                <label style="font-weight: 600; font-size: 14px;">Patient Name</label><br>
+                {{ form.patient_name }}
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="font-weight: 600; font-size: 14px;">Consultation Fee (₹)</label><br>
+                {{ form.amount }}
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="font-weight: 600; font-size: 14px;">Payment Status</label><br>
+                {{ form.status }}
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <label style="font-weight: 600; font-size: 14px;">Date & Time</label><br>
+                {{ form.payment_date }}
+            </div>
+            
+            <button type="submit" class="btn-primary" style="width: 100%; padding: 12px; border-radius: 8px; background: #5a4fcf; color: white; border: none; font-weight: bold; cursor: pointer;">Save Record</button>
+            <a href="{% url 'earnings' %}" style="display: block; text-align: center; margin-top: 15px; color: #6b7280; text-decoration: none; font-size: 14px;">Cancel</a>
+        </form>
+    </div>
+</div>
+
+<style>
+    .input-box { width: 100%; padding: 10px; border: 1px solid #e5e7eb; border-radius: 8px; font-family: 'Inter', sans-serif; margin-top: 5px; box-sizing: border-box; }
+    .input-box:focus { border-color: #5a4fcf; outline: none; }
+</style>
+{% endblock %}

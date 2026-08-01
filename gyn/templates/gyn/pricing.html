@@ -1,0 +1,250 @@
+{% extends 'gyn/base.html' %}
+{% load static %}
+{% block page_title %}Commission & Pricing{% endblock %}
+{% block content %}
+
+<!-- External CSS Link -->
+<link rel="stylesheet" href="{% static 'css/pricing.css' %}">
+
+<div class="pricing-container">
+    
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="pricing-header">
+            <div>
+                <h3><i class="fa-solid fa-gear"></i> Active Commission & Pricing</h3>
+                <p>Current pricing configuration (is_active = {{ config.is_active|yesno:"1,0" }})</p>
+            </div>
+            <div style="display: flex; align-items: center;">
+                <!-- Status Checkbox for Activation/Deactivation -->
+                <label class="status-toggle-label">
+                    <input type="checkbox" name="is_active" {% if config.is_active %}checked{% endif %} style="cursor: pointer; width: 16px; height: 16px;"> 
+                    Keep Plan Active
+                </label>
+                
+                <span class="badge-status {% if config.is_active %}badge-active{% else %}badge-inactive{% endif %}">
+                    {% if config.is_active %}ACTIVE{% else %}INACTIVE{% endif %}
+                </span>
+            </div>
+        </div>
+<!-- PRICING CARDS GRID -->
+<div class="pricing-grid">
+    
+    <!-- CARD 1: Call Consultation (GREEN) -->
+    <div class="pricing-card theme-green calc-group">
+        <div class="card-header">
+            <div class="header-title">
+                <div class="icon-box"><i class="fa-solid fa-phone"></i></div>
+                <span class="title-text">Call Consultation</span>
+            </div>
+            <div class="icon-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+        </div>
+        
+        <div class="card-body">
+            <div class="base-price-section">
+                <p>Base Price (Doctor Receives)</p>
+                <div class="base-input-wrapper">
+                    <span class="currency">₹</span>
+                    <input type="number" step="0.01" class="input-base base-price" name="call_base" value="{{ config.call_base }}">
+                </div>
+            </div>
+            <div class="fee-row">
+                <span>Platform Fee (%)</span>
+                <div class="fee-inputs">
+                    <input type="number" step="0.01" class="input-small fee-pct" name="call_fee_pct" value="{{ config.call_fee_pct }}">
+                    <span>%</span>
+                    <span class="calc-amt">(₹<span class="fee-amt">0</span>)</span>
+                </div>
+            </div>
+            <div class="fee-row">
+                <span>Tax (GST on Platform Fee)</span>
+                <div class="fee-inputs">
+                    <input type="number" step="0.01" class="input-small tax-pct" name="call_tax_pct" value="{{ config.call_tax_pct }}">
+                    <span>%</span>
+                    <span class="calc-amt">(₹<span class="tax-amt">0</span>)</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-footer">
+            <span>Final Patient Price</span>
+            <span class="final-amt">₹<span class="final-price">0</span></span>
+        </div>
+    </div>
+
+    <!-- CARD 2: Video Consultation (BLUE) -->
+    <div class="pricing-card theme-blue calc-group">
+        <div class="card-header">
+            <div class="header-title">
+                <div class="icon-box"><i class="fa-solid fa-video"></i></div>
+                <span class="title-text">Video Consultation</span>
+            </div>
+            <div class="icon-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+        </div>
+        <div class="card-body">
+            <div class="base-price-section">
+                <p>Base Price (Doctor Receives)</p>
+                <div class="base-input-wrapper">
+                    <span class="currency">₹</span>
+                    <input type="number" step="0.01" class="input-base base-price" name="video_base" value="{{ config.video_base }}">
+                </div>
+            </div>
+            <div class="fee-row">
+                <span>Platform Fee (%)</span>
+                <div class="fee-inputs">
+                    <input type="number" step="0.01" class="input-small fee-pct" name="video_fee_pct" value="{{ config.video_fee_pct }}">
+                    <span>%</span>
+                    <span class="calc-amt">(₹<span class="fee-amt">0</span>)</span>
+                </div>
+            </div>
+            <div class="fee-row">
+                <span>Tax (GST on Platform Fee)</span>
+                <div class="fee-inputs">
+                    <input type="number" step="0.01" class="input-small tax-pct" name="video_tax_pct" value="{{ config.video_tax_pct }}">
+                    <span>%</span>
+                    <span class="calc-amt">(₹<span class="tax-amt">0</span>)</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <span>Final Patient Price</span>
+            <span class="final-amt">₹<span class="final-price">0</span></span>
+        </div>
+    </div>
+
+    <!-- CARD 3: Chat Consultation (PURPLE) -->
+    <div class="pricing-card theme-purple calc-group">
+        <div class="card-header">
+            <div class="header-title">
+                <div class="icon-box"><i class="fa-solid fa-comments"></i></div>
+                <span class="title-text">Chat Consultation</span>
+            </div>
+            <div class="icon-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+        </div>
+        <div class="card-body">
+            <div class="base-price-section">
+                <p>Base Price (Doctor Receives)</p>
+                <div class="base-input-wrapper">
+                    <span class="currency">₹</span>
+                    <input type="number" step="0.01" class="input-base base-price" name="chat_base" value="{{ config.chat_base }}">
+                </div>
+            </div>
+            <div class="fee-row">
+                <span>Platform Fee (%)</span>
+                <div class="fee-inputs">
+                    <input type="number" step="0.01" class="input-small fee-pct" name="chat_fee_pct" value="{{ config.chat_fee_pct }}">
+                    <span>%</span>
+                    <span class="calc-amt">(₹<span class="fee-amt">0</span>)</span>
+                </div>
+            </div>
+            <div class="fee-row">
+                <span>Tax (GST on Platform Fee)</span>
+                <div class="fee-inputs">
+                    <input type="number" step="0.01" class="input-small tax-pct" name="chat_tax_pct" value="{{ config.chat_tax_pct }}">
+                    <span>%</span>
+                    <span class="calc-amt">(₹<span class="tax-amt">0</span>)</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <span>Final Patient Price</span>
+            <span class="final-amt">₹<span class="final-price">0</span></span>
+        </div>
+    </div>
+
+    <!-- CARD 4: In-Clinic Visit (ORANGE) -->
+    <div class="pricing-card theme-orange calc-group">
+        <div class="card-header">
+            <div class="header-title">
+                <div class="icon-box"><i class="fa-solid fa-location-dot"></i></div>
+                <span class="title-text">In-Clinic Visit</span>
+            </div>
+            <div class="icon-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+        </div>
+        <div class="card-body">
+            <div class="base-price-section">
+                <p>Base Price (Doctor Receives)</p>
+                <div class="base-input-wrapper">
+                    <span class="currency">₹</span>
+                    <input type="number" step="0.01" class="input-base base-price" name="clinic_base" value="{{ config.clinic_base }}">
+                </div>
+            </div>
+            <div class="fee-row">
+                <span>Platform Fee (%)</span>
+                <div class="fee-inputs">
+                    <input type="number" step="0.01" class="input-small fee-pct" name="clinic_fee_pct" value="{{ config.clinic_fee_pct }}">
+                    <span>%</span>
+                    <span class="calc-amt">(₹<span class="fee-amt">0</span>)</span>
+                </div>
+            </div>
+            <div class="fee-row">
+                <span>Tax (GST on Platform Fee)</span>
+                <div class="fee-inputs">
+                    <input type="number" step="0.01" class="input-small tax-pct" name="clinic_tax_pct" value="{{ config.clinic_tax_pct }}">
+                    <span>%</span>
+                    <span class="calc-amt">(₹<span class="tax-amt">0</span>)</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <span>Final Patient Price</span>
+            <span class="final-amt">₹<span class="final-price">0</span></span>
+        </div>
+    </div>
+
+    <!-- CARD 5: Home Nurse Visit (PINK) -->
+    <div class="pricing-card theme-pink calc-group">
+        <div class="card-header">
+            <div class="header-title">
+                <div class="icon-box"><i class="fa-solid fa-house-medical"></i></div>
+                <span class="title-text">Home Nurse Visit</span>
+            </div>
+            <div class="icon-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+        </div>
+        <div class="card-body">
+            <div class="base-price-section">
+                <p>Base Price (Doctor Receives)</p>
+                <div class="base-input-wrapper">
+                    <span class="currency">₹</span>
+                    <input type="number" step="0.01" class="input-base base-price" name="nurse_base" value="{{ config.nurse_base }}">
+                </div>
+            </div>
+            <div class="fee-row">
+                <span>Platform Fee (%)</span>
+                <div class="fee-inputs">
+                    <input type="number" step="0.01" class="input-small fee-pct" name="nurse_fee_pct" value="{{ config.nurse_fee_pct }}">
+                    <span>%</span>
+                    <span class="calc-amt">(₹<span class="fee-amt">0</span>)</span>
+                </div>
+            </div>
+            <div class="fee-row">
+                <span>Tax (GST on Platform Fee)</span>
+                <div class="fee-inputs">
+                    <input type="number" step="0.01" class="input-small tax-pct" name="nurse_tax_pct" value="{{ config.nurse_tax_pct }}">
+                    <span>%</span>
+                    <span class="calc-amt">(₹<span class="tax-amt">0</span>)</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <span>Final Patient Price</span>
+            <span class="final-amt">₹<span class="final-price">0</span></span>
+        </div>
+    </div>
+    
+</div>
+        
+
+        <div style="text-align: right;">
+            <button type="submit" style="background:#0f766e; color:white; padding:10px 25px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; font-size:16px;">
+                Save Pricing Settings
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- External JS Link -->
+<script src="{% static 'js/script.js' %}"></script>
+
+{% endblock %}

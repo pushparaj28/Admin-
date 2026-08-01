@@ -1,0 +1,407 @@
+{% extends 'gyn/base.html' %} {% block content %}
+{% block page_title %}Review{% endblock %}
+{% load static %}
+
+<div class="premium-dashboard">
+
+  <!-- TOOLBAR (SEARCH, RATING FILTER & ADD BUTTON) -->
+  <form method="GET" class="reviews-toolbar" style="display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 25px;">
+
+    <!-- LEFT: Search Bar -->
+    <!-- LEFT: Search Bar -->
+    <!-- Yahan se 'class="search-box"' hata diya hai taaki double border na aaye -->
+    <div style="flex: 1; max-width: 400px; position: relative;">
+      <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
+      <input type="text" name="search" value="{{ current_search }}" placeholder="Search by patient name or keyword..." style="width: 100%; padding: 10px 15px 10px 40px; border: 1px solid #d1d5db; border-radius: 6px; outline: none; box-sizing: border-box; background: white;">
+    </div>
+
+    <!-- RIGHT: Filters & Add Button -->
+    <div class="filters-group" style="display: flex; align-items: center; gap: 12px;">
+
+      <!-- Filter (By Stars) -->
+      <select name="rating" onchange="this.form.submit()" style="padding: 10px 30px 10px 15px; border: 1px solid #d1d5db; border-radius: 6px; color: #374151; background: #fff; cursor: pointer;">
+        <option value="all"> <i class="fa-solid fa-filter"></i> All Ratings</option>
+        <option value="5" {% if current_rating == '5' %}selected{% endif %}>5 Stars</option>
+        <option value="4" {% if current_rating == '4' %}selected{% endif %}>4 Stars</option>
+        <option value="3" {% if current_rating == '3' %}selected{% endif %}>3 Stars</option>
+        <option value="2" {% if current_rating == '2' %}selected{% endif %}>2 Stars</option>
+        <option value="1" {% if current_rating == '1' %}selected{% endif %}>1 Star</option>
+      </select>
+
+      <!-- Reset Button -->
+      <a href="{% url 'reviews' %}" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; color: #6b7280; text-decoration: none; background: #f9fafb;" title="Reset Filters">
+        <i class="fa-solid fa-rotate-right"></i>
+      </a>
+
+      <!-- NAYA ADD REVIEW BUTTON YAHAN HAI -->
+      <a href="{% url 'add_review' %}" class="btn-add-purple" style="background: #5a4fcf; color: white; padding: 10px 16px; border-radius: 6px; text-decoration: none; font-weight: 600; margin-left: 10px;">
+        + Add Review
+      </a>
+    
+    </div>
+
+    <!-- Hidden submit button taaki Enter dabane se search ho -->
+    <button type="submit" style="display: none;"></button>
+  </form>
+
+  <div class="kpi-cards-wrapper">
+    <div class="kpi-card card-purple-border">
+      <div class="kpi-icon bg-purple"><i class="fa-solid fa-star"></i></div>
+      <div class="kpi-info">
+        <p class="kpi-label">Average Rating</p>
+        <h3 class="kpi-value">
+          {{ average_rating }} <span class="stars-mini">★★★★★</span>
+        </h3>
+        <p class="kpi-subtext">Based on
+          {{ total_reviews }} reviews
+        </p>
+      </div>
+    </div>
+
+    <div class="kpi-card card-blue-border">
+      <div class="kpi-icon bg-blue"><i class="fa-solid fa-comment"></i></div>
+      <div class="kpi-info">
+        <p class="kpi-label">Total Reviews</p>
+        <h3 class="kpi-value">
+          {{ total_reviews }}
+        </h3>
+        <p class="kpi-subtext"><span class="trend-up"><i class="fa-solid fa-arrow-up"></i> 12%</span> from last month</p>
+      </div>
+    </div>
+
+    <div class="kpi-card card-green-border">
+      <div class="kpi-icon bg-green"><i class="fa-solid fa-thumbs-up"></i></div>
+      <div class="kpi-info">
+        <p class="kpi-label">Positive Reviews</p>
+        <h3 class="kpi-value">
+          {{ positive_percentage }}%
+        </h3>
+        <p class="kpi-subtext"><span class="trend-up"><i class="fa-solid fa-arrow-up"></i> 8%</span> from last month</p>
+      </div>
+    </div>
+
+    <div class="kpi-card card-orange-border">
+      <div class="kpi-icon bg-orange"><i class="fa-solid fa-clock"></i></div>
+      <div class="kpi-info">
+        <p class="kpi-label">Pending Replies</p>
+        <h3 class="kpi-value">
+          {{ pending_replies }}
+        </h3>
+        <p class="kpi-subtext"><span class="trend-down"><i class="fa-solid fa-arrow-down"></i> 5%</span> from last month</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-layout">
+
+    <div class="left-sidebar">
+
+      <div class="sidebar-box">
+        <div class="box-header">
+          <h3>Rating Distribution</h3>
+        </div>
+
+        <div class="rating-rows">
+          <div class="rating-row">
+            <span class="star-label">5 Stars</span>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: {% if total_reviews > 0 %}{% widthratio rating_counts.five total_reviews 100 %}{% else %}0{% endif %}%;"></div>
+            </div>
+            <span class="rating-count">
+              {{ rating_counts.five }}</span>
+          </div>
+
+          <div class="rating-row">
+            <span class="star-label">4 Stars</span>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: {% if total_reviews > 0 %}{% widthratio rating_counts.four total_reviews 100 %}{% else %}0{% endif %}%;"></div>
+            </div>
+            <span class="rating-count">
+              {{ rating_counts.four }}</span>
+          </div>
+
+          <div class="rating-row">
+            <span class="star-label">3 Stars</span>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: {% if total_reviews > 0 %}{% widthratio rating_counts.three total_reviews 100 %}{% else %}0{% endif %}%;"></div>
+            </div>
+            <span class="rating-count">
+              {{ rating_counts.three }}</span>
+          </div>
+
+          <div class="rating-row">
+            <span class="star-label">2 Stars</span>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: {% if total_reviews > 0 %}{% widthratio rating_counts.two total_reviews 100 %}{% else %}0{% endif %}%;"></div>
+            </div>
+            <span class="rating-count">
+              {{ rating_counts.two }}</span>
+          </div>
+
+          <div class="rating-row">
+            <span class="star-label">1 Star</span>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: {% if total_reviews > 0 %}{% widthratio rating_counts.one total_reviews 100 %}{% else %}0{% endif %}%;"></div>
+            </div>
+            <span class="rating-count">
+              {{ rating_counts.one }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-box">
+        <div class="box-header">
+          <h3>Review Activity</h3>
+          <button class="btn-outline-small">Last 6 Months <i class="fa-solid fa-chevron-down"></i></button>
+        </div>
+
+        <div class="chart-container" style="position: relative; height:200px; width:100%;">
+          <canvas id="reviewChart" data-labels='{{ chart_labels|safe }}' data-values='{{ chart_data|safe }}'>
+          </canvas>
+        </div>
+      </div>
+      <div class="sidebar-box">
+        <h3>Quick Stats</h3>
+        <div class="quick-stats-grid">
+          <div class="mini-stat bg-light-purple">
+            <i class="fa-solid fa-users text-purple"></i>
+            <h4>
+              {{ total_reviews }}
+            </h4>
+            <p>Total Reviews</p>
+          </div>
+          <div class="mini-stat bg-light-green">
+            <i class="fa-regular fa-circle-check text-green"></i>
+            <h4>1,208</h4>
+            <p>Active Reviews</p>
+          </div>
+          <div class="mini-stat bg-light-orange">
+            <i class="fa-regular fa-comments text-orange"></i>
+            <h4>92%</h4>
+            <p>Response Rate</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-content">
+      <div class="sidebar-box" style="padding: 0;">
+
+        <div class="box-header" style="padding: 20px 24px; margin: 0; border-bottom: 1px solid #f3f4f6;">
+          <h3>All Reviews <span class="text-muted" style="font-weight: normal; font-size: 14px;">(
+              {{ total_reviews }})</span></h3>
+        </div>
+
+        <div class="reviews-list" style="padding: 0 24px;">
+          {% for review in reviews %}
+          <div class="review-item">
+
+            <div class="reviewer-avatar">
+              <img src="https://ui-avatars.com/api/?name={{ review.patient_name }}&background=f5f3ff&color=5a4fcf&bold=true" alt="Avatar">
+            </div>
+
+            <div class="review-details">
+              <div class="review-header">
+                <div class="reviewer-name-wrap">
+                  <h4 class="reviewer-name">
+                    {{ review.patient_name }}
+                  </h4>
+                  {% if review.is_verified_patient %}
+                  <span class="verified-tag"><i class="fa-regular fa-circle-check"></i> Verified Patient</span>
+                  {% endif %}
+                </div>
+                <span class="review-time">
+                  {{ review.created_at|timesince }} ago</span>
+              </div>
+
+              <div class="review-stars">
+                <span class="star {% if review.rating >= 1 %}filled{% endif %}">★</span>
+                <span class="star {% if review.rating >= 2 %}filled{% endif %}">★</span>
+                <span class="star {% if review.rating >= 3 %}filled{% endif %}">★</span>
+                <span class="star {% if review.rating >= 4 %}filled{% endif %}">★</span>
+                <span class="star {% if review.rating >= 5 %}filled{% endif %}">★</span>
+              </div>
+
+              <p class="review-text">
+                {{ review.review_text }}
+              </p>
+
+              <div class="review-bottom-actions">
+                <div class="interaction-btns">
+                  <!-- 1. HELPFUL BUTTON (Yahan ID aur onclick add kiya hai) -->
+                  <button type="button" class="btn-text" onclick="makeHelpful({{ review.id }})">
+                    <i class="fa-regular fa-thumbs-up"></i> Helpful (<span id="helpful-count-{{ review.id }}">
+                      {{ review.helpful_count }}</span>)
+                  </button>
+
+                  <!-- 2. REPLY BUTTON (Yahan onclick add kiya hai) -->
+                  <button type="button" class="btn-text" onclick="toggleReplyBox({{ review.id }})">
+                    <i class="fa-solid fa-reply"></i> Reply
+                  </button>
+                </div>
+
+                <div class="crud-btns">
+                
+                  <a href="{% url 'edit_review' review.id %}" class="btn-action btn-edit">
+                    <i class="fa-solid fa-pen-clip"></i> Edit
+                  </a>
+
+                  <a href="{% url 'delete_review' review.id %}" class="btn-action btn-delete" onclick="return confirm('Are you sure you want to delete this review?');">
+                    <i class="fa-regular fa-trash-can"></i> Delete
+                  </a>
+                
+                </div>
+              </div>
+
+              <!-- ========================================== -->
+              <!-- NAYA CODE: REPLY FORM (Hidden By Default)  -->
+              <!-- ========================================== -->
+              <div id="reply-box-{{ review.id }}" style="display: none; margin-top: 15px; padding: 15px; background: #f8fafc; border-radius: 8px;">
+                <form action="{% url 'add_review_reply' review.id %}" method="POST">
+                  {% csrf_token %}
+                  <textarea name="reply_text" rows="2" placeholder="Write your reply..." style="width: 100%; border: 1px solid #cbd5e1; border-radius: 5px; padding: 10px; margin-bottom: 10px; font-family: inherit;" required></textarea>
+                  <button type="submit" style="background: #0f766e; color: white; padding: 6px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: 500;">
+                    Submit Reply
+                  </button>
+                </form>
+              </div>
+
+              <!-- ========================================== -->
+              <!-- NAYA CODE: JO REPLIES PEHLE SE HAIN, WO DIKHAYEIN -->
+              <!-- ========================================== -->
+              {% if review.replies.all %}
+              <div class="replies-list" style="margin-top: 15px; margin-left: 20px; padding-left: 15px; border-left: 3px solid #e2e8f0;">
+                {% for reply in review.replies.all %}
+
+                <!-- 1. NORMAL REPLY VIEW -->
+                <div id="reply-view-{{ reply.id }}" style="margin-bottom: 10px;">
+                  <strong><i class="fa-solid fa-user-doctor" style="color: #0f766e;"></i>
+                    {{ reply.replier_name }}</strong>
+                  <span style="font-size: 12px; color: gray;">replied</span>
+
+                  <!-- EDIT & DELETE BUTTONS (Sirf Admin ko dikhenge) -->
+                  {% if request.user.is_superuser %}
+                  <span style="float: right; font-size: 13px;">
+                    <!-- Edit Button -->
+                    <!-- Edit Button (Small Outline Style) -->
+                    <button onclick="toggleEditReply({{ reply.id }})" style="display: inline-flex; align-items: center; gap: 5px; background: white; border: 1px solid #bfdbfe; color: #3b82f6; padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; transition: 0.2s;">
+                      <i class="fa-solid fa-pencil" style="font-size: 11px;"></i> Edit
+                    </button>
+
+                    <!-- Delete Button (Small Outline Style) -->
+                    <a href="{% url 'delete_review_reply' reply.id %}" onclick="return confirm('Are you sure you want to delete this reply?');" style="display: inline-flex; align-items: center; gap: 5px; background: white; border: 1px solid #fecaca; color: #ef4444; padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 500; text-decoration: none; transition: 0.2s;">
+                      <i class="fa-regular fa-trash-can" style="font-size: 11px;"></i> Delete
+                    </a>
+                  </span>
+                  {% endif %}
+
+                  <p style="margin: 5px 0 0 0; font-size: 14px; color: #334155;">
+                    {{ reply.reply_text }}
+                  </p>
+                </div>
+
+                <!-- 2. HIDDEN EDIT FORM (Jab Edit par click hoga tab khulega) -->
+                <div id="reply-edit-form-{{ reply.id }}" style="display: none; margin-bottom: 10px;">
+                  <form action="{% url 'edit_review_reply' reply.id %}" method="POST">
+                    {% csrf_token %}
+                    <textarea name="reply_text" rows="2" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 5px; padding: 8px; font-family: inherit;" required>
+                    {{ reply.reply_text }}</textarea>
+
+                    <div style="margin-top: 5px;">
+                      <button type="submit" style="background: #0f766e; color: white; padding: 4px 12px; border: none; border-radius: 4px; font-size: 12px; cursor: pointer;">Save Changes</button>
+                      <button type="button" onclick="toggleEditReply({{ reply.id }})" style="background: #ef4444; color: white; padding: 4px 12px; border: none; border-radius: 4px; font-size: 12px; cursor: pointer; margin-left: 5px;">Cancel</button>
+                    </div>
+                  </form>
+                </div>
+
+                {% endfor %}
+              </div>
+              {% endif %}
+            </div>
+          </div>
+          {% empty %}
+          <div style="padding: 40px; text-align: center; color: #6b7280;">
+            <i class="fa-solid fa-inbox" style="font-size: 40px; margin-bottom: 10px; color: #d1d5db;"></i>
+            <p>No reviews found yet.</p>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="custom-pagination">
+          {% if reviews.has_previous %}
+          <a href="?page={{ reviews.previous_page_number }}" class="page-link"><i class="fa-solid fa-chevron-left"></i> Previous</a>
+          {% else %}
+          <span class="page-link disabled"><i class="fa-solid fa-chevron-left"></i> Previous</span>
+          {% endif %}
+
+          <span class="page-link active">
+            {{ reviews.number }}</span>
+
+          {% if reviews.paginator.num_pages > 1 %}
+          <span class="page-link dots">...</span>
+          <a href="?page={{ reviews.paginator.num_pages }}" class="page-link">
+            {{ reviews.paginator.num_pages }}</a>
+          {% endif %}
+
+          {% if reviews.has_next %}
+          <a href="?page={{ reviews.next_page_number }}" class="page-link">Next <i class="fa-solid fa-chevron-right"></i></a>
+          {% else %}
+          <span class="page-link disabled">Next <i class="fa-solid fa-chevron-right"></i></span>
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/script.js' %}">
+
+</script>
+<script>
+  // Reply box kholne aur band karne ke liye
+  function toggleReplyBox(reviewId) {
+    const box = document.getElementById(`reply-box-${reviewId}`);
+    if (box.style.display === "none" || box.style.display === "") {
+      box.style.display = "block";
+    } else {
+      box.style.display = "none";
+    }
+  }
+
+  // Helpful count badhane ke liye bina page reload kiye
+  function makeHelpful(reviewId) {
+    fetch(`/review/helpful/${reviewId}/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}',
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          // Count live update hoga (+1 ya -1 dono kaam karega)
+          document.getElementById(`helpful-count-${reviewId}`).innerText = data.new_count;
+        } else if (data.status === 'error') {
+          // Agar user login nahi hai toh alert dikhayega
+          alert(data.message);
+        }
+      });
+  }
+  // Reply edit karne wala form kholne aur band karne ke liye
+  function toggleEditReply(replyId) {
+    const viewDiv = document.getElementById(`reply-view-${replyId}`);
+    const editFormDiv = document.getElementById(`reply-edit-form-${replyId}`);
+
+    if (editFormDiv.style.display === "none") {
+      editFormDiv.style.display = "block";
+      viewDiv.style.display = "none"; // Purana text chupa do
+    } else {
+      editFormDiv.style.display = "none";
+      viewDiv.style.display = "block"; // Wapas dikha do
+    }
+  }
+</script>
+{% endblock %}

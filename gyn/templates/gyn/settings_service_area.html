@@ -1,0 +1,131 @@
+{% extends 'gyn/base.html' %}
+{% load static %}
+{% block page_title %}Settings - Service Areas{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<div class="settings-wrapper">
+    
+    <!-- Title -->
+    <div class="settings-title">
+        <h2>Settings</h2>
+        <p>Manage your account and preferences</p>
+    </div>
+
+    <!-- Tabs (Scrollable) -->
+    <div class="settings-tabs">
+        <!-- <a href="#" class="tab-link"><i class="fa-solid fa-user"></i> Profile</a>
+        <a href="#" class="tab-link"><i class="fa-solid fa-bell"></i> Notifications</a>
+        <a href="#" class="tab-link"><i class="fa-solid fa-shield-halved"></i> Security</a>
+        <a href="#" class="tab-link"><i class="fa-solid fa-credit-card"></i> Billing</a>
+        <a href="#" class="tab-link"><i class="fa-solid fa-clock"></i> Availability</a>
+        <a href="#" class="tab-link"><i class="fa-solid fa-file-shield"></i> Verification</a> -->
+        <a href="#" class="tab-link active"><i class="fa-solid fa-map-location-dot"></i> Service Areas</a>
+    </div>
+
+    <!-- Main Content Form -->
+    <form id="serviceAreaForm" method="POST">
+        {% csrf_token %}
+        
+        <div class="section-header">
+            <h3>Manage Service Areas</h3>
+            <p>Define the geographic areas where you provide services <span class="text-green">Maximum 2 locations</span></p>
+        </div>
+
+        <!-- Add Secondary Location Button -->
+        <button type="button" class="dashed-btn">
+            <i class="fa-solid fa-plus"></i> Add Secondary Location <span class="zone-badge-light">ZONE 02</span>
+        </button>
+
+        <!-- Primary Location Card -->
+        <div class="service-card">
+            <div class="card-top">
+                <div class="loc-title">
+                    <div class="loc-icon"><i class="fa-solid fa-location-dot"></i></div>
+                    <div>
+                        <h4>Primary Location</h4>
+                        <p>Active Service Zone</p>
+                    </div>
+                </div>
+                <div class="zone-badge-active">ZONE 01</div>
+            </div>
+
+            <div class="form-group">
+                <label>Area Name</label>
+                <input type="text" name="area_name" value="{{ primary_location.area_name|default:'' }}" class="form-control" placeholder="e.g. COD (Kanpur Nagar)">
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Pincode</label>
+                    <input type="text" id="pincode-input" name="pincode" value="{{ primary_location.pincode|default:'' }}" class="form-control" placeholder="208013" maxlength="6">
+                </div>
+                <div class="form-group">
+                    <label>City</label>
+                    <input type="text" id="city-input" name="city" value="{{ primary_location.city|default:'' }}" class="form-control" placeholder="Kanpur Nagar" readonly style="background-color: #f8fafc; cursor: not-allowed;">
+                </div>
+            </div>
+
+            <!-- NAYA: Search Location on Map (Purana wala hata diya hai) -->
+            <div class="form-group">
+                <label><i class="fa-solid fa-magnifying-glass"></i> Search Location on Map</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="map-search-input" class="form-control" placeholder="e.g. AIIMS Delhi, Kanpur...">
+                    <button type="button" id="btn-search-map" style="background: #0f766e; color: white; border: none; border-radius: 8px; padding: 0 20px; cursor: pointer;">Search</button>
+                </div>
+            </div>
+
+            <!-- NAYA: Service Radius (Purana wala hata diya hai) -->
+            <div class="slider-container">
+                <label style="margin: 0;">Service Radius</label>
+                <span class="slider-val" id="radius-val">{{ primary_location.service_radius|default:12 }} km</span>
+            </div>
+            <input type="range" name="service_radius" id="radius-slider" min="1" max="50" value="{{ primary_location.service_radius|default:12 }}" oninput="document.getElementById('radius-val').innerText = this.value + ' km'">
+
+            <!-- LIVE MAP CONTAINER -->
+            <div style="position: relative; margin-bottom: 15px; margin-top: 20px;">
+                <!-- Real Map Box -->
+                <div id="service-map" style="width: 100%; height: 250px; border-radius: 10px; z-index: 1;"></div>
+                
+                <!-- Lat/Lng Display aur Hidden Inputs -->
+                <div style="position: absolute; bottom: 10px; left: 10px; background: white; padding: 5px 15px; border-radius: 6px; font-size: 11px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 999;">
+                    LAT <span id="lat-display">{{ primary_location.latitude|default:"26.42555" }}</span> &nbsp;|&nbsp; 
+                    LNG <span id="lng-display">{{ primary_location.longitude|default:"80.34391" }}</span>
+                </div>
+
+                <!-- Yeh hidden inputs form submit hone par Views.py mein jayenge -->
+                <input type="hidden" name="latitude" id="input-lat" value="{{ primary_location.latitude|default:'26.42555' }}">
+                <input type="hidden" name="longitude" id="input-lng" value="{{ primary_location.longitude|default:'80.34391' }}">
+            </div>
+
+            <button type="button" class="form-control" onclick="getUserCurrentLocation()" style="background: #0f766e; color: white; font-weight: bold; border: none; cursor: pointer;">
+                <i class="fa-solid fa-crosshairs"></i> Fetch My Current Location
+            </button>
+        </div>
+
+        <!-- Bottom Action Bar -->
+        <div class="bottom-action-bar">
+            <div class="action-text">
+                <i class="fa-solid fa-shield-check"></i>
+                <div>
+                    <h4>Confirm Geographic Accuracy</h4>
+                    <p>Changes will reflect immediately across patient search results.</p>
+                </div>
+            </div>
+            <div>
+                <button type="button" class="btn-discard">Discard Changes</button>
+                <button type="submit" class="btn-save">Save Changes</button>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<!-- 1. LEAFLET JS LIBRARY (Map chalane ke liye zaroori hai) -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script src="{% static 'js/script.js' %}"></script>
+
+{% endblock %}

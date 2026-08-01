@@ -1,0 +1,42 @@
+{% extends 'gyn/base.html' %}
+
+{% block content %}
+<div class="premium-dashboard" style="max-width: 600px; margin: 40px auto;">
+    <div class="sidebar-box">
+        <h2 style="margin-top: 0; color: #111827;">{{ title }}</h2>
+        <hr style="border: none; border-top: 1px solid #f3f4f6; margin-bottom: 20px;">
+        
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div style="margin-bottom: 15px;">
+                <label style="font-weight: 600; font-size: 14px;">Patient Name</label><br>
+                {{ form.patient_name }}
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="font-weight: 600; font-size: 14px;">Rating (1 to 5)</label><br>
+                {{ form.rating }}
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="font-weight: 600; font-size: 14px;">Review Text</label><br>
+                {{ form.review_text }}
+            </div>
+            
+            <div style="margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
+                {{ form.is_verified_patient }}
+                <label style="font-weight: 600; font-size: 14px; margin: 0;">Verified Patient?</label>
+            </div>
+            
+            <button type="submit" class="btn-primary" style="width: 100%;">Save Review</button>
+            <a href="{% url 'reviews' %}" style="display: block; text-align: center; margin-top: 15px; color: #6b7280; text-decoration: none; font-size: 14px;">Cancel</a>
+        </form>
+    </div>
+</div>
+
+<style>
+    .input-box { width: 100%; padding: 10px; border: 1px solid #e5e7eb; border-radius: 8px; font-family: 'Inter', sans-serif; margin-top: 5px; box-sizing: border-box; }
+    .input-box:focus { border-color: #5a4fcf; outline: none; }
+</style>
+{% endblock %}

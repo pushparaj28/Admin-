@@ -1,0 +1,35 @@
+<!-- gyn/global_report.html -->
+{% extends 'gyn/base.html' %}
+{% load static %}
+
+{% block page_title %}Growth Insights{% endblock %}
+
+{% block content %}
+<div class="global-report-container">
+    <h2>Global Earnings Report</h2>
+    <table class="global-report-table">
+        <thead>
+            <tr>
+                <th>Doctor Name</th>
+                <th>Total Appointments</th>
+                <th>Total Patients</th>
+                <th>Total Earned (₹)</th>
+                <th>Joined On</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for doc in report %}
+            <tr>
+                <td><strong>{{ doc.username }}</strong></td>
+                <td><span class="badge-count">{{ doc.total_appointments|default:"0" }}</span></td>
+                <td>{{ doc.clean_patient_count|default:"0" }}</td>
+                <td class="total-amount">₹ {{ doc.total_earned|default:"0" }}</td>
+                <td>{{ doc.date_joined|date:"d M Y" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

@@ -1,0 +1,174 @@
+{% extends 'gyn/base.html' %}
+{% load static %}
+{% block page_title %}Patients Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <div class="greeting">
+        <h2> Good Evening, Pushpendra!</h2>
+        <p>Here's what's happening with your patients today.</p>
+    </div>
+   
+    <a href="{% url 'add_patient' %}" class="btn-primary">+ Add New Patient</a>
+   
+</div>
+
+<!-- KPI CARDS -->
+<div class="kpi-row">
+    <div class="kpi-card">
+        <div class="kpi-icon bg-teal"><i class="fa-solid fa-users"></i></div>
+        <div class="kpi-info">
+            <h4>Total Patients</h4>
+            <h2>{{ total_patients }}</h2>
+            <p class="text-teal"><i class="fa-solid fa-arrow-up"></i> Active Database</p>
+        </div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-icon bg-pink"><i class="fa-solid fa-person-pregnant"></i></div>
+        <div class="kpi-info">
+            <h4>Pregnant</h4>
+            <h2>{{ pregnant_count }}</h2>
+            <p class="text-pink">{{ pregnant_pct }}% of total</p>
+        </div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-icon bg-purple"><i class="fa-solid fa-baby"></i></div>
+        <div class="kpi-info">
+            <h4>Postpartum</h4>
+            <h2>{{ postpartum_count }}</h2>
+            <p class="text-purple">{{ postpartum_pct }}% of total</p>
+        </div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-icon bg-orange"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <div class="kpi-info">
+            <h4>High Risk</h4>
+            <h2>{{ high_risk_count }}</h2>
+            <p class="text-orange">{{ high_risk_pct }}% of total</p>
+        </div>
+    </div>
+</div>
+
+<!-- SEARCH & FILTERS -->
+<form method="GET" class="filters-bar">
+    <input type="text" name="search" value="{{ search_query }}" placeholder="Search by Name, Mobile, Email..." class="filter-input" style="flex: 2;">
+    
+    <select name="status" class="filter-select">
+        <option value="all">All Status</option>
+        <option value="Pregnant" {% if status_filter == 'Pregnant' %}selected{% endif %}>Pregnant</option>
+        <option value="Postpartum" {% if status_filter == 'Postpartum' %}selected{% endif %}>Postpartum</option>
+        <option value="Planning" {% if status_filter == 'Planning' %}selected{% endif %}>Planning</option>
+        <option value="No Show" {% if status_filter == 'No Show' %}selected{% endif %}>No Show</option>
+    </select>
+    
+    <select name="risk" class="filter-select">
+        <option value="all">All Risk Level</option>
+        <option value="Low" {% if risk_filter == 'Low' %}selected{% endif %}>Low Risk</option>
+        <option value="Medium" {% if risk_filter == 'Medium' %}selected{% endif %}>Medium Risk</option>
+        <option value="High" {% if risk_filter == 'High' %}selected{% endif %}>High Risk</option>
+    </select>
+
+    <button type="submit" class="btn-search"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+    <a href="{% url 'patients_dashboard' %}" class="btn-reset"><i class="fa-solid fa-rotate-right"></i> Reset</a>
+</form>
+
+<!-- QUICK PILLS -->
+<div class="quick-pills">
+    <strong>Quick Filters:</strong>
+    <a href="?status=all" class="pill {% if status_filter == 'all' %}active{% endif %}">All</a>
+    <a href="?status=Pregnant" class="pill">🤰 Pregnant</a>
+    <a href="?status=Postpartum" class="pill">🤱 Postpartum</a>
+    <a href="?status=Planning" class="pill">❤️ Planning</a>
+    <a href="?risk=High" class="pill">🚨 High Risk</a>
+    <a href="?status=No Show" class="pill">👻 No Show</a>
+</div>
+
+<!-- DATA TABLE -->
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Patient ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>Status</th>
+                <th>Risk Level</th>
+                <th>Age</th>
+                <th>City</th>
+                {% if request.user.is_superuser %}
+                <th>Actions</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            <!-- DHYAN DEIN: Ab yahan 'page_obj' loop ho raha hai -->
+            {% for p in page_obj %}
+            <tr>
+                <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
+                <td>{{ p.patient_id }}</td>
+                <td>
+                    <div class="avatar-cell">
+                        <div class="avatar-circle">{{ p.avatar_emoji|default:"👤" }}</div>
+                        {{ p.name }}
+                    </div>
+                </td>
+                <td>{{ p.email|default:"-" }}</td>
+                <td><i class="fa-solid fa-phone text-teal" style="font-size:10px;"></i> {{ p.mobile }}</td>
+                <td>
+                    <span class="badge {% if p.status == 'Pregnant' %}badge-pregnant{% elif p.status == 'Postpartum' %}badge-postpartum{% elif p.status == 'Planning' %}badge-planning{% else %}badge-noshow{% endif %}">{{ p.status }}</span>
+                </td>
+                <td>
+                    <span class="badge {% if p.risk_level == 'Low' %}badge-low{% elif p.risk_level == 'Medium' %}badge-medium{% else %}badge-high{% endif %}">{{ p.risk_level }}</span>
+                </td>
+                <td>{{ p.age }}</td>
+                <td>{{ p.city }}</td>
+                <td>
+                    <div class="action-btns">
+                       
+                        <a href="#" class="action-btn view"><i class="fa-solid fa-eye"></i></a>
+                        <!-- EDIT AUR DELETE BUTTONS WIRING -->
+                        <a href="{% url 'edit_patient' p.id %}" class="action-btn edit"><i class="fa-solid fa-pen"></i></a>
+                        <a href="{% url 'delete_patient' p.id %}" onclick="return confirm('Kya aap sach mein is patient ko delete karna chahte hain?');" class="action-btn delete"><i class="fa-solid fa-trash"></i></a>
+                        
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="10" style="text-align: center; padding: 30px;">
+                    <p>Koi patient data nahi mila.</p>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- PAGINATION BAR (Matching your screenshot) -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; font-size: 13px; color: #6b7280; border-top: 1px solid #f3f4f6; padding-top: 15px;">
+        <div>
+            Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ paginator.count }} entries
+        </div>
+        
+        <div style="display: flex; gap: 5px;">
+            {% if page_obj.has_previous %}
+                <a href="?search={{ search_query }}&status={{ status_filter }}&risk={{ risk_filter }}&page={{ page_obj.previous_page_number }}" style="padding: 5px 12px; border: 1px solid #d1d5db; border-radius: 4px; color: #374151; text-decoration: none;">&lt;</a>
+            {% endif %}
+
+            {% for num in paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <span style="padding: 5px 12px; border: 1px solid #0f766e; border-radius: 4px; background: #0f766e; color: white; font-weight: 600;">{{ num }}</span>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a href="?search={{ search_query }}&status={{ status_filter }}&risk={{ risk_filter }}&page={{ num }}" style="padding: 5px 12px; border: 1px solid #d1d5db; border-radius: 4px; color: #374151; text-decoration: none;">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a href="?search={{ search_query }}&status={{ status_filter }}&risk={{ risk_filter }}&page={{ page_obj.next_page_number }}" style="padding: 5px 12px; border: 1px solid #d1d5db; border-radius: 4px; color: #374151; text-decoration: none;">&gt;</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/script.js' %}"></script>
+{% endblock %}

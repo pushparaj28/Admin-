@@ -1,0 +1,78 @@
+{% extends 'gyn/base.html' %}
+{% block page_title %}Edit Patient{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+    
+    <div style="display: flex; justify-content: space-between; margin-bottom: 25px; border-bottom: 1px solid #e5e7eb; padding-bottom: 15px;">
+        <h2 style="margin: 0; color: #d97706;"><i class="fa-solid fa-user-pen"></i> Edit Patient Record</h2>
+        <a href="{% url 'patients_dashboard' %}" style="color: #6b7280; text-decoration: none;">&larr; Back to Dashboard</a>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            
+            <div>
+                <label style="font-size: 13px; font-weight: 600; color:#374151;">Patient ID *</label>
+                <input type="text" name="patient_id" required value="{{ patient.patient_id }}" class="filter-input" style="width: 100%; margin-top:5px; box-sizing: border-box;">
+            </div>
+            
+            <div>
+                <label style="font-size: 13px; font-weight: 600; color:#374151;">Full Name *</label>
+                <input type="text" name="name" required value="{{ patient.name }}" class="filter-input" style="width: 100%; margin-top:5px; box-sizing: border-box;">
+            </div>
+
+            <div>
+                <label style="font-size: 13px; font-weight: 600; color:#374151;">Avatar Emoji</label>
+                <input type="text" name="avatar_emoji" value="{{ patient.avatar_emoji }}" class="filter-input" style="width: 100%; margin-top:5px; box-sizing: border-box;">
+            </div>
+
+            <div>
+                <label style="font-size: 13px; font-weight: 600; color:#374151;">Mobile Number *</label>
+                <input type="text" name="mobile" required value="{{ patient.mobile }}" class="filter-input" style="width: 100%; margin-top:5px; box-sizing: border-box;">
+            </div>
+
+            <div>
+                <label style="font-size: 13px; font-weight: 600; color:#374151;">Email Address</label>
+                <input type="email" name="email" value="{{ patient.email }}" class="filter-input" style="width: 100%; margin-top:5px; box-sizing: border-box;">
+            </div>
+
+            <div>
+                <label style="font-size: 13px; font-weight: 600; color:#374151;">Age *</label>
+                <input type="number" name="age" required value="{{ patient.age }}" class="filter-input" style="width: 100%; margin-top:5px; box-sizing: border-box;">
+            </div>
+
+            <div>
+                <label style="font-size: 13px; font-weight: 600; color:#374151;">City *</label>
+                <input type="text" name="city" required value="{{ patient.city }}" class="filter-input" style="width: 100%; margin-top:5px; box-sizing: border-box;">
+            </div>
+
+            <div>
+                <label style="font-size: 13px; font-weight: 600; color:#374151;">Status *</label>
+                <select name="status" class="filter-select" style="width: 100%; margin-top:5px; box-sizing: border-box;">
+                    <option value="Pregnant" {% if patient.status == 'Pregnant' %}selected{% endif %}>Pregnant</option>
+                    <option value="Postpartum" {% if patient.status == 'Postpartum' %}selected{% endif %}>Postpartum</option>
+                    <option value="Planning" {% if patient.status == 'Planning' %}selected{% endif %}>Planning</option>
+                    <option value="Not Pregnant" {% if patient.status == 'Not Pregnant' %}selected{% endif %}>Not Pregnant</option>
+                    <option value="No Show" {% if patient.status == 'No Show' %}selected{% endif %}>No Show</option>
+                </select>
+            </div>
+
+            <div>
+                <label style="font-size: 13px; font-weight: 600; color:#374151;">Risk Level *</label>
+                <select name="risk_level" class="filter-select" style="width: 100%; margin-top:5px; box-sizing: border-box;">
+                    <option value="Low" {% if patient.risk_level == 'Low' %}selected{% endif %}>Low</option>
+                    <option value="Medium" {% if patient.risk_level == 'Medium' %}selected{% endif %}>Medium</option>
+                    <option value="High" {% if patient.risk_level == 'High' %}selected{% endif %}>High</option>
+                </select>
+            </div>
+            
+        </div>
+
+        <div style="margin-top: 30px; text-align: right;">
+            <button type="submit" class="btn-search" style="background:#d97706; padding: 12px 30px; font-size:16px;">Update Changes</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

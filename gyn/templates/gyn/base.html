@@ -20,6 +20,7 @@
             </div>
             
             <nav class="sidebar-menu">
+                <!-- NORMAL USERS & ADMIN (Yeh sabko dikhega) -->
                 <a href="/dashboard/" class="nav-item">
                     <i class="fa-solid fa-border-all"></i> Dashboard
                 </a>
@@ -29,25 +30,40 @@
                 <a href="/patients/" class="nav-item">
                     <i class="fa-solid fa-users"></i> Patients
                 </a>
+                <a href="/reviews/" class="nav-item">
+                    <i class="fa-solid fa-star"></i> Reviews
+                </a>
+                <a href="/availability/" class="nav-item">
+                    <i class="fa-solid fa-clock"></i> Manage Availability 
+                </a>
                 <a href="/earnings/" class="nav-item">
                     <i class="fa-solid fa-wallet"></i> Earnings And Payouts
                 </a>
-                <a href="/withdrawal/" class="nav-item">
-                    <i class="fa-solid fa-gear"></i> Withdrawal
-                </a>
                 <a href="/commission/" class="nav-item">
-                    <i class="fa-solid fa-gear"></i> Commission
-                </a>
-                <a href="/reviews/" class="nav-item">
-                    <i class="fa-solid fa-gear"></i> Reviews
-                </a>
-                <a href="/availability/" class="nav-item">
-                    <i class="fa-solid fa-gear"></i> Manage Availability 
-                </a>
-                <a href="{% url 'growth_insights' %}" class="nav-item">
-                    <i class="fa-solid fa-chart-line"></i> Growth Insights
+                    <i class="fa-solid fa-percent"></i> Commission
                 </a>
 
+                <!-- ========================================== -->
+                <!-- SUPER ADMIN ONLY (Sirf Admin ko dikhega) -->
+                <!-- ========================================== -->
+                {% if request.user.is_superuser %}
+                    <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 10px 15px;">
+                    
+                    <!-- Admin Control Center -->
+                    <a href="{% url 'manage_doctors' %}" class="nav-item">
+                        <i class="fa-solid fa-user-md"></i> Manage Doctors
+                    </a>
+                    <a href="{% url 'global_report' %}" class="nav-item">
+                        <i class="fa-solid fa-chart-line"></i> Global Earnings Report
+                    </a>
+                    
+                    <!-- Purane Admin Links -->
+                    
+                    <a href="/withdrawal/" class="nav-item">
+                        <i class="fa-solid fa-money-bill-transfer"></i> Withdrawal
+                    </a>
+                    
+                {% endif %}
                 <a href="/settings/" class="nav-item">
                     <i class="fa-solid fa-gear"></i> Settings
                 </a>
@@ -62,6 +78,7 @@
 
         <main class="main-content">
             
+            
             <header class="top-nav">
                 <h2 id="page-title">{% block page_title %}Dashboard{% endblock %}</h2>
                 
@@ -71,9 +88,18 @@
                         <input type="text" placeholder="Quick search...">
                     </div>
                     <i class="fa-regular fa-bell icon-btn"></i>
-                    <div class="profile-box">
-                        <span class="avatar"></span>
-                        <span class="name">Dr. Pushpendra</span>
+                    <div class="profile-box" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+    
+                        <!-- 1. DYNAMIC AVATAR -->
+                        <span class="avatar">
+                            <img src="https://ui-avatars.com/api/?name={{ request.user.first_name|default:request.user.username }}&background=e0f2fe&color=0284c7&rounded=true" width="35" height="35" style="border-radius: 50%;" alt="Profile">
+                        </span>
+                        
+                        <!-- 2. DYNAMIC NAME -->
+                        <span class="name" style="font-weight: 600; color: #1e293b;">
+                            Dr. {{ request.user.first_name|default:request.user.username }}
+                        </span>
+                        
                     </div>
                 </div>
             </header>
@@ -85,6 +111,23 @@
 
         </main>
     </div>
-
+    
+    {% if messages %}
+    <div class="toast-container">
+        {% for message in messages %}
+            <div class="toast {{ message.tags }}">
+                {% if message.tags == 'success' %}
+                    <i class="fa-solid fa-circle-check"></i>
+                {% elif message.tags == 'warning' %}
+                    <i class="fa-solid fa-trash-can"></i>
+                {% else %}
+                    <i class="fa-solid fa-circle-info"></i>
+                {% endif %}
+                <span>{{ message }}</span>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %} ```
+    
 </body>
 </html>

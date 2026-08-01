@@ -75,7 +75,7 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'pushpendradb',
+        'NAME': 'DoctorDb',
         'USER': 'root',
         'PASSWORD': 'Singh@123',
         'HOST': 'localhost',
@@ -119,3 +119,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # Yeh Django ka default hai
+    'gyn.backends.EmailOrUsernameModelBackend',   # Yeh aapka naya custom backend hai
+]

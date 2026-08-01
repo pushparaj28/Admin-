@@ -1,0 +1,65 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log in - Smart Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="auth-body-modern">
+    
+    <div class="auth-wrapper">
+        <div class="auth-card-modern">
+            
+            <div class="auth-image-side">
+                <img src="https://cdn.vectorstock.com/i/500p/82/47/login-form-interface-vector-54318247.jpg" alt="Welcome Illustration" class="illustration-img">
+            </div>
+
+            <div class="auth-form-side">
+                <div class="form-content">
+                    <h2>LOGIN</h2>
+                    <p class="auth-subtitle">Hello, friend! I'm Gynosakhi – task manager you can trust everything. Let's get in touch!</p>
+                    
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="auth-success-alert">
+                                 {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <form method="POST" class="auth-form" id="loginForm">
+                        {% csrf_token %}
+                        
+                        <div class="auth-field">
+                            <input type="text" name="username" class="auth-input" placeholder="Email" required>
+                        </div>
+                        
+                        <div class="auth-field">
+                            <input type="password" name="password" class="auth-input" placeholder="Password" required>
+                        </div>
+                        
+                        {% if form.errors %}
+                            <div class="auth-errors">Invalid username or password.</div>
+                        {% endif %}
+                        
+                        <button type="submit" class="btn-auth-modern">Let's start!</button>
+                    </form>
+
+                    <div class="social-login">
+                        <button class="social-icon fb"><i class="fa-brands fa-facebook-f"></i></button>
+                        <button class="social-icon google"><img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" alt="Google" width="16"></button>
+                    </div>
+                    
+                    <span class="auth-link-text">Don't have an account? <a href="{% url 'signup' %}">Sign up</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>
