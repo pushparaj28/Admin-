@@ -60,7 +60,7 @@ urlpatterns = [
     path('global-report/', views.global_report, name='global_report'),
 
     path('impersonate/<int:doctor_id>/', impersonate_doctor, name='impersonate_doctor'),
-    path('toggle-admin/<int:user_id>/', views.toggle_admin_status, name='toggle_admin'),
+    path('toggle-admin/<int:user_id>/', views.toggle_admin, name='toggle_admin'),
     
 ]
   

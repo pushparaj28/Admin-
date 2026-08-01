@@ -17,6 +17,7 @@
     </thead>
     <tbody>
       {% for doctor in doctors %}
+      <p>User: {{ doctor.username }} | Admin: {{ doctor.is_superuser }} | Staff: {{ doctor.is_staff }}</p>
       <tr>
         <td>
           <div class="doctor-info">
@@ -38,7 +39,7 @@
             <!-- Login Button -->
             <a href="{% url 'impersonate_doctor' doctor.id %}" class="doc-btn doc-btn-login">Login</a>
         
-            <!-- ADMIN TOGGLE: Yahan check karein -->
+            <!-- ADMIN TOGGLE: check karne ke liye condition -->
             {% if doctor.is_superuser or doctor.is_staff %}
                 <a href="{% url 'toggle_admin' doctor.id %}" class="doc-btn btn-remove-admin">
                     Remove Admin

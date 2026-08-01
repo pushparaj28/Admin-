@@ -63,20 +63,28 @@ from django.core.exceptions import PermissionDenied
 
 @user_passes_test(lambda u: u.is_superuser, login_url='login')
 def manage_doctors(request):
-    doctors = User.objects.filter(is_superuser=False)
+    doctors = User.objects.all().exclude(username=request.user.username)
     return render(request, 'gyn/manage_doctors.html', {'doctors': doctors})
 
 # // kisi bhi doctor ko super admin bnana ke liye  
 @user_passes_test(lambda u: u.is_superuser)
-def toggle_admin_status(request, user_id):
-    # filter(is_superuser=False) ko hata kar .all() use karein
-    doctors = User.objects.all().exclude(username=request.user.username) 
+def toggle_admin(request, user_id):
+    doctor = get_object_or_404(User, id=user_id)
     
-    doctors = doctors.annotate(
-        total_earned=Sum('earnings__amount', filter=Q(earnings__status='Completed')),
-        total_appointments=Count('appointments', distinct=True)
-    )
-    return render(request, 'gyn/manage_doctors.html', {'doctors': doctors})
+    # Khud ko admin se remove na karein (safety)
+    if doctor != request.user:
+        # Status toggle karein
+        new_status = not doctor.is_superuser
+        
+        doctor.is_superuser = new_status
+        doctor.is_staff = new_status
+        
+        # Sirf in do fields ko update karein (MySQL ke liye fast)
+        doctor.save(update_fields=['is_superuser', 'is_staff'])
+        
+        print(f"User {doctor.username} is_superuser set to: {new_status}")
+        
+    return redirect('manage_doctors')
 
 # // global report ke liye 
 @user_passes_test(lambda u: u.is_superuser, login_url='login')
