@@ -1,0 +1,77 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}Student Management{% endblock %}
+    </title>
+
+    <link rel="stylesheet"
+          href="{% static 'students/style.css' %}">
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <header class="navbar">
+
+        <div class="nav-container">
+
+            <a href="{% url 'student_list' %}" class="logo">
+                <span class="logo-icon">🎓</span>
+                CSAStudent<span>Data</span>
+            </a>
+
+            <nav class="nav-links">
+
+                <a href="{% url 'student_list' %}">Home</a>
+
+                <a href="{% url 'student_list' %}" class="active">
+                    👨‍🎓 Students
+                </a>
+
+                <a href="{% url 'add_student' %}" class="nav-add">
+                    + Add Student
+                </a>
+
+            </nav>
+
+        </div>
+
+    </header>
+
+
+    <!-- Main Content -->
+
+    <main>
+
+        {% block content %}
+
+        {% endblock %}
+
+    </main>
+
+
+    <!-- Footer -->
+
+    <footer class="footer">
+
+        <p>
+            © 2026 <strong>CSAStudent</strong>
+            · Data  Built with Pushpendra 
+        </p>
+
+    </footer>
+
+</body>
+
+</html>

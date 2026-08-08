@@ -1,0 +1,522 @@
+/* =========================================
+   1. CSS Variables (Color Palette & Theme)
+========================================= */
+:root {
+    --primary-color: #4f46e5;
+    --primary-hover: #4338ca;
+    --bg-color: #f8fafc;
+    --card-bg: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --danger-color: #ef4444;
+    --danger-hover: #dc2626;
+    
+    --font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --transition: all 0.3s ease;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* =========================================
+   2. Reset & Base Styles
+========================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* =========================================
+   3. Navbar (Header)
+========================================= */
+.navbar {
+    background-color: var(--card-bg);
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-main);
+}
+
+.logo span:not(.logo-icon) {
+    color: var(--primary-color);
+}
+
+.logo-icon {
+    font-size: 1.8rem;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.nav-links a {
+    font-weight: 500;
+    color: var(--text-muted);
+    transition: var(--transition);
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-md);
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: var(--primary-color);
+    background-color: #f1f5f9;
+}
+
+.nav-links .nav-add {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+}
+
+.nav-links .nav-add:hover {
+    background-color: var(--primary-hover);
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* =========================================
+   4. Main Content Layout (FIXED CONFLICT)
+========================================= */
+main {
+    flex: 1;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2.5rem 2rem;
+    /* Yahan se flex aur center hata diya gaya hai taaki grid layout kharab na ho */
+}
+
+/* =========================================
+   5. Form Container (Add / Edit Student)
+========================================= */
+.form-container {
+    background-color: var(--card-bg);
+    width: 100%;
+    max-width: 500px;
+    padding: 2.5rem;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
+    margin: 0 auto; /* Form ko center rakhne ke liye ye zaroori hai */
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.form-header span {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.form-header h1 {
+    font-size: 1.8rem;
+    color: var(--text-main);
+    margin-bottom: 0.25rem;
+}
+
+.form-header p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+/* =========================================
+   6. Form Inputs & Labels
+========================================= */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+    font-size: 0.9rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--text-main);
+    background-color: var(--bg-color);
+    transition: var(--transition);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    background-color: var(--card-bg);
+}
+
+/* =========================================
+   7. Buttons & Actions
+========================================= */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.cancel-btn, .save-btn {
+    flex: 1;
+    text-align: center;
+    padding: 0.75rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cancel-btn {
+    background-color: white;
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+}
+
+.cancel-btn:hover {
+    background-color: #f1f5f9;
+    color: var(--text-main);
+}
+
+.save-btn {
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.save-btn:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+/* =========================================
+   8. Footer
+========================================= */
+.footer {
+    text-align: center;
+    padding: 1.5rem;
+    background-color: var(--card-bg);
+    border-top: 1px solid var(--border-color);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-top: auto;
+}
+
+/* =========================================
+   9. Grid Layout (Ek Row mein 3 Div ke liye)
+========================================= */
+.student-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+    gap: 2rem; /* Divs ke beech ka space */
+    width: 100%;
+}
+
+.student-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.student-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px); /* Hover par thoda upar uthega */
+    border-color: var(--primary-color);
+}
+
+/* Responsive Grid (Taki mobile aur tablet par thik dikhe) */
+@media (max-width: 992px) {
+    .student-grid {
+        grid-template-columns: repeat(2, 1fr); /* Tablet par 2 div */
+    }
+}
+
+@media (max-width: 768px) {
+    .student-grid {
+        grid-template-columns: 1fr; /* Mobile par 1 div */
+    }
+    
+    .nav-container {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .nav-links {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+/* =========================================
+   10. List Page Header & Wrapper
+========================================= */
+.list-wrapper {
+    width: 100%;
+}
+
+.list-header {
+    margin-bottom: 2rem;
+}
+
+.list-header .subtitle {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.list-header h2 {
+    font-size: 2.2rem;
+    color: var(--text-main);
+    margin-top: 0.25rem;
+}
+
+/* =========================================
+   11. Premium Colorful Student Cards
+========================================= */
+.student-card {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Hover par Top par Gradient Line */
+.student-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #4f46e5, #ec4899, #f59e0b);
+    opacity: 0;
+    transition: var(--transition);
+}
+
+/* Card Hover Effect */
+.student-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 35px -5px rgba(79, 70, 229, 0.15);
+    border-color: transparent;
+}
+
+.student-card:hover::before {
+    opacity: 1;
+}
+
+/* ================== AVATAR & STATUS ================== */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.2rem;
+}
+
+.avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.4rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.status-badge {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.8rem;
+    border-radius: 20px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+/* MAGIC TRICK: Auto-coloring for every card in the grid */
+/* Card 1, 5, 9... (Indigo Theme) */
+.student-card:nth-child(4n+1) .avatar { background: linear-gradient(135deg, #e0e7ff, #c7d2fe); color: #4338ca; }
+.student-card:nth-child(4n+1) .status-badge { color: #4338ca; background-color: #e0e7ff; }
+
+/* Card 2, 6, 10... (Pink Theme) */
+.student-card:nth-child(4n+2) .avatar { background: linear-gradient(135deg, #fce7f3, #fbcfe8); color: #be185d; }
+.student-card:nth-child(4n+2) .status-badge { color: #be185d; background-color: #fce7f3; }
+
+/* Card 3, 7, 11... (Green Theme) */
+.student-card:nth-child(4n+3) .avatar { background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #15803d; }
+.student-card:nth-child(4n+3) .status-badge { color: #15803d; background-color: #dcfce7; }
+
+/* Card 4, 8, 12... (Orange/Amber Theme) */
+.student-card:nth-child(4n+4) .avatar { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #b45309; }
+.student-card:nth-child(4n+4) .status-badge { color: #b45309; background-color: #fef3c7; }
+
+
+/* ================== STUDENT DETAILS ================== */
+.student-name {
+    font-size: 1.35rem;
+    color: var(--text-main);
+    margin-bottom: 1.2rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.student-details {
+    margin-bottom: 1.5rem;
+}
+
+.student-details p {
+    display: flex;
+    align-items: center;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+}
+
+/* Emojis in round circles */
+.student-details p span {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    background-color: #f1f5f9;
+    border-radius: 50%;
+    margin-right: 12px;
+    font-size: 0.95rem;
+    transition: var(--transition);
+}
+
+.student-card:hover .student-details p span {
+    background-color: white;
+    box-shadow: var(--shadow-sm);
+}
+
+/* ================== FOOTER & BUTTONS ================== */
+.card-footer {
+    margin-top: auto;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.student-id {
+    font-size: 0.85rem;
+    color: #64748b;
+    font-weight: 700;
+    background: #f8fafc;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+}
+
+.card-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-edit, .btn-delete {
+    padding: 0.5rem 0.9rem;
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.btn-edit {
+    background-color: #f1f5f9;
+    color: var(--text-main);
+}
+
+.btn-edit:hover {
+    background-color: var(--primary-color);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-delete {
+    background-color: #fee2e2;
+    color: var(--danger-color);
+}
+
+.btn-delete:hover {
+    background-color: var(--danger-hover);
+    color: white;
+    transform: translateY(-1px);
+}

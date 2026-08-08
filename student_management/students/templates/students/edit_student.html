@@ -1,0 +1,124 @@
+{% extends 'students/base.html' %}
+
+{% block title %}
+Edit Student
+{% endblock %}
+
+{% block content %}
+
+<div class="form-container">
+
+    <div class="form-header">
+
+        <span>✏️</span>
+
+        <h1>Edit Student</h1>
+
+        <p>
+            Update student information.
+        </p>
+
+    </div>
+
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+
+        <div class="form-group">
+
+            <label>Student Name</label>
+
+            <input
+                type="text"
+                name="name"
+                value="{{ student.name }}"
+                required
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Email</label>
+
+            <input
+                type="email"
+                name="email"
+                value="{{ student.email }}"
+                required
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Phone</label>
+
+            <input
+                type="text"
+                name="phone"
+                value="{{ student.phone }}"
+                required
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Course</label>
+
+            <input
+                type="text"
+                name="course"
+                value="{{ student.course }}"
+                required
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Age</label>
+
+            <input
+                type="number"
+                name="age"
+                value="{{ student.age }}"
+                min="1"
+                max="100"
+                required
+            >
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <a
+                href="{% url 'student_list' %}"
+                class="cancel-btn"
+            >
+                Cancel
+            </a>
+
+
+            <button
+                type="submit"
+                class="save-btn"
+            >
+                💾 Update Student
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}
